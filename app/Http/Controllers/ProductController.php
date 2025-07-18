@@ -205,5 +205,23 @@ class ProductController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $q = $request->query('q');
+
+        $products = Product::with('category')
+            ->where('code', 'like', "%$q%")
+            ->orWhere('name', 'like', "%$q%")
+            ->orWhere('barcode', 'like', "%$q%")
+            ->orWhere('color', 'like', "%$q%")
+            ->orWhereHas('category', function ($query) use ($q) {
+                $query->where('name', 'like', "%$q%");
+            })
+            ->get();
+
+        return response()->json($products);
+    }
+
+
 
 }

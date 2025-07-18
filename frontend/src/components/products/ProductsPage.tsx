@@ -2,6 +2,8 @@ import React, { useState ,useEffect} from 'react';
 import api from '../../services/api';
 import {ArrowUpCircle, Plus, Search, Filter, Edit, Trash2, Eye, Package, DollarSign, TrendingUp, AlertTriangle } from 'lucide-react';
 import ProductModal from './ProductModal';
+import { useLocation,useNavigate } from 'react-router-dom';
+
 import { toast } from 'react-hot-toast';
 
 
@@ -25,6 +27,11 @@ interface Product {
 }
 
 const ProductsPage: React.FC = () => {
+  const location = useLocation();
+const navigate = useNavigate();
+const initialSearch = location.state?.searchTerm || '';
+const [searchTerm, setSearchTerm] = useState(initialSearch);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [categories, setCategories] = useState<{id:number,name :string}[]>([]);
@@ -51,52 +58,51 @@ const ProductsPage: React.FC = () => {
   /* --------------------------------
     1) useEffect: Lấy danh sách SP
   ----------------------------------*/
-   useEffect(() => {
+const fetchProducts = async (searchTerm?: string) => {
+  setIsLoading(true);
   let cancel = false;
-
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    try {
-      const endpoint = `/products?page=${page}&per_page=${pagination.per_page}`;
-      const res = await api.get(endpoint);
-
-      const mapped = res.data.products.map((p: any) => ({
-        id: String(p.id),
-        name: p.name,
-        sku: p.code,
-        category: p.category,
-        category_id: Number(p.category_id),
-        price: Number(p.price),
-        stock: Number(p.quantity),
-        min_stock: Number(p.min_stock),
-        status: p.status,
-        image: p.image,
-        color: p.color, 
-        barcode: p.barcode, 
-        description: p.description ?? '',
-        createdAt: p.created_at,
-        sales: Number(p.sales),
-      }));
-
-      if (!cancel) {
-        setProducts(mapped);
-        setPagination(res.data.pagination); // 👈 cập nhật thông tin phân trang
-        setPage(res.data.pagination.current_page); // đồng bộ lại nếu backend điều chỉnh
-      }
-    } catch (err) {
-      if (!cancel) {
-        setProducts([]);
-        console.error(err);
-      }
-    } finally {
-      if (!cancel) setIsLoading(false);
+  try {
+    let endpoint = `/products?page=${page}&per_page=${pagination.per_page}`;
+    if (searchTerm) {
+      endpoint += `&q=${encodeURIComponent(searchTerm)}`;
     }
-  };
 
+    const res = await api.get(endpoint);
+
+    const mapped = res.data.products.map((p: any) => ({
+      id: String(p.id),
+      name: p.name,
+      sku: p.code,
+      category: p.category,
+      category_id: Number(p.category_id),
+      price: Number(p.price),
+      stock: Number(p.quantity),
+      min_stock: Number(p.min_stock),
+      status: p.status,
+      image: p.image,
+      color: p.color,
+      barcode: p.barcode,
+      description: p.description ?? '',
+      createdAt: p.created_at,
+      sales: Number(p.sales),
+    }));
+
+    if (!cancel) {
+      setProducts(mapped);
+      setPagination(res.data.pagination);
+      setPage(res.data.pagination.current_page);
+    }
+  } catch (err) {
+    if (!cancel) {
+      setProducts([]);
+      console.error(err);
+    }
+  } finally {
+    if (!cancel) setIsLoading(false);
+  }
+};
+   useEffect(() => {
   fetchProducts();
-  return () => {
-    cancel = true;
-  };
 }, [page]);
 
    
@@ -140,10 +146,6 @@ useEffect(() => {
   fetchCategories();
 }, []);
 
-    
-
-
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [showModal, setShowModal] = useState(false);
@@ -152,7 +154,7 @@ useEffect(() => {
 
   const statuses = ['all', 'active', 'inactive', 'out_of_stock'];
 
-  const filteredProducts = products.filter(product => {
+ const filteredProducts = products.filter(product => {
   const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         product.sku.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -162,6 +164,7 @@ useEffect(() => {
 
   return matchesSearch && matchesCategory && matchesStatus;
 });
+
 
   const getStatusColor = (status: Product['status']) => {
     switch (status) {
@@ -352,6 +355,15 @@ const [outOfStockProducts, setOutOfStockProducts] = useState(0);
 
   loadStats();
 }, []);
+   useEffect(() => {
+    if (initialSearch) {
+      console.log('🔍 Tìm sản phẩm với:', initialSearch);
+      fetchProducts(initialSearch); // Có tìm kiếm
+    } else {
+      fetchProducts(); // Không có tìm kiếm
+    }
+  }, [initialSearch,page]);
+  
 
 
   

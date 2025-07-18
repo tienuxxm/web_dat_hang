@@ -334,15 +334,31 @@ class OrderController extends Controller
 
 
     /** ----------- DELETE ----------- */
-    public function destroy(Order $order)
+    public function destroy($orderNumber)
     {
+        $user = JWTAuth::user();
+        $order = Order::where('order_number', $orderNumber)->firstOrFail();
+
+
+        // Gọi policy delete (tự động kiểm tra trạng thái và phòng ban)
         $this->authorize('delete', $order);
 
-        // Soft delete nếu Model dùng SoftDeletes; xoá cứng thì gỡ trait
-        $order->delete();
+        DB::beginTransaction();
+        try {
+            $order->items()->delete();
+            $order->delete();
 
-        return response()->json(['message' => 'Deleted']);
+            DB::commit();
+            return response()->json(['message' => 'Đơn hàng đã được xóa.']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Lỗi khi xóa đơn hàng.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
     public function show(Order $order)          // <- route‑model binding
     {
         $user = JWTAuth::user();
@@ -527,6 +543,29 @@ class OrderController extends Controller
 
         return response()->json($result);
     }
+    public function search(Request $request)
+    {
+        $q = $request->query('q', '');
+
+        $orders = Order::with(['items.product.category'])
+            ->where('order_number', 'like', "%$q%")
+            ->orWhere('supplier_name', 'like', "%$q%")
+            ->orWhereHas('items', function ($query) use ($q) {
+                $query->where('product_name', 'like', "%$q%");
+            })
+            ->orWhereHas('items.product', function ($query) use ($q) {
+                $query->where('barcode', 'like', "%$q%")
+                    ->orWhere('color', 'like', "%$q%");
+            })
+            ->orWhereHas('items.product.category', function ($query) use ($q) {
+                $query->where('name', 'like', "%$q%");
+            })
+            ->get();
+
+        return response()->json($orders);
+    }
+
+
 
     
 

@@ -76,7 +76,7 @@ class OrderPolicy
 
     public function delete(User $user, Order $order): bool
     {
-        return $order->status === 'draft' && $this->canAccessOrder($user, $order);
+        return $order->status === 'draft' && $user->isInDepartment('KINH_DOANH') ;
     }
 
     private function canAccessOrder(User $user, Order $order): bool

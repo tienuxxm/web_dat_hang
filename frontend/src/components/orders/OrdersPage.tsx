@@ -6,6 +6,8 @@ import { OrderPayload, OrderStatus, PaymentStatus,OrderFromAPI } from './OrderMo
 import OrderModal from './OrderModal'; // 👈 Nếu OrderModal.tsx nằm cùng thư mục
 
 import { getCurrentUser } from '../../utils/auth';
+import { useLocation } from 'react-router-dom';
+
 import toast from 'react-hot-toast';
 
 
@@ -52,16 +54,19 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ mode }) => {
   const [lastPage, setLastPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [search, setSearch]     = useState('');
+  const location = useLocation();
+  const { searchTerm: initialSearch } = location.state || {};
+  const [search, setSearch]     = useState(initialSearch || '');
   const [totalOrders, setTotalOrders] = useState(0);
   const [monthlyOrders, setMonthlyOrders] = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState(getCurrentUser());
 
 
-  const fetchOrders = async () => {
+
+  const fetchOrders = async (searchTerm?:string) => {
       setLoading(true);
       try {
-        const res = await api.get('/orders',{params: { page } });
+        const res = await api.get('/orders',{params: { page,q: searchTerm ||''} });
               const { data, current_page, last_page,total } = res.data;
 
         
@@ -101,7 +106,6 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ mode }) => {
 
 
 
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState('all');
   const [showModal, setShowModal] = useState(false);
@@ -247,10 +251,18 @@ const handleEditOrder = async (order: Order) => {
 };
 
 
-  const handleDeleteOrder = (orderId: string) => {
-    if (confirm('Are you sure you want to delete this order?')) {
-      setOrders(orders.filter(o => o.id !== orderId));
-    }
+  const handleDeleteOrder = async (order: Order) => {
+    if (!window.confirm('Bạn có chắc muốn xóa đơn hàng này không?')) return;
+
+  try {
+    const res = await api.delete(`/orders/${order.orderNumber}`);
+    toast.success('Đã xóa đơn hàng');
+    // Gọi lại hàm loadOrders để cập nhật danh sách
+    fetchOrders();
+  } catch (error: any) {
+    const message = error.response?.data?.message || 'Xóa thất bại';
+    toast.error(message);
+  }
   };
 
 function mapOrderFromApi(o: any): Order {
@@ -340,38 +352,38 @@ const handleMergeOrders = async () => {
     toast.error(err.response?.data?.message || 'Gộp đơn thất bại');
   }
 };
+const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
+
 
 useEffect(() => {
   const user = getCurrentUser();
-  setCurrentUser(user);
-}, []); // 👈 hoặc bạn trigger lại sau login/logout
-console.log('👤 Current user:', currentUser); // 👈 THÊM DÒNG NÀY
+    setCurrentUser(user);
+  }, []); // 👈 hoặc bạn trigger lại sau login/logout
+  console.log('👤 Current user:', currentUser); // 👈 THÊM DÒNG NÀY
 
+const fetchMonthlyOrders = async () => {
+      try {
+        const res = await api.get('/orders/merged-by-month');
+        setMonthlyOrders(res.data); // [{ month: 7, items: [...] }]
+      } catch (error) {
+        console.error('❌ Lỗi khi fetch đơn gộp theo tháng:', error);
+      }
+    };
+
+// 🚦 Tự động xử lý khi `mode` thay đổi
 useEffect(() => {
-  if (mode === 'normal') {
-    fetchOrders(); // gọi lại danh sách đơn hàng chưa gộp
-  }
-}, [mode, page,currentUser]);
+      // ✅ Reset toàn bộ liên quan
+      setOrders([]);
+      setMonthlyOrders([]);
+      setSelectedOrders([]);
+      setSelectedMonths([]);
 
-     useEffect(() => {
-  if (mode !== 'monthly') return;
-
-  const fetchMonthlyOrders = async () => {
-    try {
-      const res = await api.get('/orders/merged-by-month');
-      setMonthlyOrders(res.data); // [{ month: 7, items: [...] }]
-    } catch (e) {
-      console.error('❌ Failed to fetch monthly orders', e);
-    }
-  };
-
-  fetchMonthlyOrders();
-}, [mode]);
-useEffect(() => {
-  setOrders([]);
-  setMonthlyOrders([]);
-}, [mode]);
-const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
+      if (mode === 'normal') {
+        fetchOrders();
+      } else if (mode === 'monthly') {
+        fetchMonthlyOrders();
+      }
+    }, [mode, page, currentUser]);
 
 const toggleMonthSelection = (month: string) => {
   setSelectedMonths(prev =>
@@ -400,18 +412,74 @@ const handleExportSelectedMonths = async () => {
     toast.error(err.response?.data?.message || 'Xuất thất bại');
   }
 };
+// Giả sử bạn có:
+const [pendingOrders, setPendingOrders] = useState(0);
+const [processingOrders, setProcessingOrders] = useState(0);
+
+useEffect(() => {
+  if (!currentUser || !orders) return;
+
+  const statusCount = {
+    pending: 0,
+    processing: 0,
+  };
+
+  const department = currentUser?.department?.name_department;
+  const role = currentUser?.role?.name_role;
+  
+
+  orders.forEach(order => {
+    const status = order.status;
+
+    if (department === 'KINH_DOANH') {
+      if (status === 'draft') statusCount.pending++;
+      if (status === 'pending') statusCount.processing++;
+    } else if (department === 'CUNG_UNG') {
+      if (status === 'pending') statusCount.pending++;
+      if (status === 'approved') statusCount.processing++;
+    } else if (role === 'giam_doc') {
+      if (status === 'approved') statusCount.pending++;
+      if (status === 'fulfilled') statusCount.processing++;
+    }
+  });
 
 
+  setPendingOrders(statusCount.pending);
+  setProcessingOrders(statusCount.processing);
+}, [currentUser, orders]);
+const role = currentUser?.role?.name_role;
+const dept = currentUser?.department?.name_department;
+
+const pendingLabel =
+  dept === 'KINH_DOANH'
+    ? 'Đơn nháp (Draft)'
+    : dept === 'CUNG_UNG'
+    ? 'Đơn chờ xử lý (Pending)'
+    : role === 'giam_doc'
+    ? 'Đơn cần duyệt (Approved)'
+    : 'Chưa rõ';
+
+const processingLabel =
+  dept === 'KINH_DOANH'
+    ? 'Đơn đã gửi chờ duyệt (Pending)'
+    : dept === 'CUNG_UNG'
+    ? 'Đơn đã duyệt (Approved)'
+    : role === 'giam_doc'
+    ? 'Đơn đang giao (Fulfilled)'
+    : 'Chưa rõ';
+useEffect(() => {
+    if (initialSearch) {
+      console.log('🔍 Tìm đơn hàng với:', initialSearch);
+      setSearch(initialSearch);
+      fetchOrders(initialSearch); // Có search
+    } else {
+      fetchOrders(); // Không search
+    }
+  }, [initialSearch, page]); // 👈 thêm `page` nếu có phân trang
+
+    
 
 
-
-
-
-
-
-
-  const pendingOrders = orders.filter(o => o.status === 'pending').length;
-  const processingOrders = orders.filter(o => o.status === 'approved').length;
   const totalRevenue = orders.filter(o => o.paymentStatus === 'paid').reduce((sum, o) => sum + o.total, 0);
 
   return (
@@ -446,7 +514,8 @@ const handleExportSelectedMonths = async () => {
         <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Pending Orders</p>
+              
+              <p className="text-gray-400 text-sm">{pendingLabel}</p>
               <p className="text-white text-2xl font-bold">{pendingOrders}</p>
             </div>
             <Clock className="h-8 w-8 text-yellow-400" />
@@ -456,7 +525,7 @@ const handleExportSelectedMonths = async () => {
         <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Processing</p>
+              <p className="text-gray-400 text-sm">{processingLabel}</p>
               <p className="text-white text-2xl font-bold">{processingOrders}</p>
             </div>
             <AlertCircle className="h-8 w-8 text-blue-400" />
@@ -607,12 +676,15 @@ const handleExportSelectedMonths = async () => {
                         <Edit className="h-4 w-4" />
                       </button>
                       )}
-                      <button
-                        onClick={() => handleDeleteOrder(order.id)}
+                      {currentUser.department?.name_department === 'KINH_DOANH' && order.status === 'draft' && (
+                        <button
+                        onClick={() => handleDeleteOrder(order)}
                         className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
+                      )}
+                      
                     </div>
                   </td>
                 </tr>
@@ -676,7 +748,7 @@ const handleExportSelectedMonths = async () => {
         )}
 
 
-      {mode === 'monthly' && (
+      {mode === 'monthly'  &&(
           <div className="mt-6 space-y-6">
             {monthlyOrders.map((group: any) => (
               <div key={group.month} className="bg-gray-800/40 rounded-xl p-4 border border-gray-600/30">

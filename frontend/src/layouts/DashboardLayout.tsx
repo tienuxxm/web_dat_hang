@@ -76,6 +76,7 @@ export default function DashboardLayout() {
           user={user}
           onToggleSidebar={() => setCollapsed(!collapsed)}
           sidebarCollapsed={collapsed}
+          onPageChange={setCurrentPage}
         />
 
         <div className="flex flex-1">

@@ -33,16 +33,19 @@ Route::middleware('auth:api')->group(function () {
 
 
     /* Products */
+    Route::get('/products/search', [ProductController::class, 'search']);
     Route::get('products',  [ProductController::class, 'index']);
     Route::post('products', [ProductController::class, 'store']);
     Route::put('products/{id}',          [ProductController::class, 'update']);
     Route::put('products/{id}/status',   [ProductController::class, 'updateStatus']);
 
+
     /* Orders */
+    
     Route::prefix('orders')->controller(OrderController::class)->group(function () {
+    Route::get('search', 'search');
     Route::get('merged-by-month', 'mergedByMonth'); // Đưa trước
     Route::patch('merge',         'combine');       // Đưa trước
-
     Route::get('/',        'index');   
     Route::post('/',       'store');
     Route::match(['put', 'patch'], '{order}', 'update');

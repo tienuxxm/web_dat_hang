@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Order extends Model
 {
-
+    use  SoftDeletes;
     /* ---------- cột ghi hàng loạt ---------- */
    protected $fillable = ['total_amount','status','user_id','approved_by','approved_at','supplier_name','payment_method','subtotal','tax','shipping', 'payment_status','shipping_address','order_date','estimated_delivery', 'notes','merged','order_number'
 ];
