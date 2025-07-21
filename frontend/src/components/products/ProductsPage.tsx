@@ -1,9 +1,8 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState ,useEffect,useMemo} from 'react';
 import api from '../../services/api';
 import {ArrowUpCircle, Plus, Search, Filter, Edit, Trash2, Eye, Package, DollarSign, TrendingUp, AlertTriangle } from 'lucide-react';
 import ProductModal from './ProductModal';
 import { useLocation,useNavigate } from 'react-router-dom';
-
 import { toast } from 'react-hot-toast';
 
 
@@ -28,9 +27,8 @@ interface Product {
 
 const ProductsPage: React.FC = () => {
   const location = useLocation();
-const navigate = useNavigate();
 const initialSearch = location.state?.searchTerm || '';
-const [searchTerm, setSearchTerm] = useState(initialSearch);
+const [searchTerm, setSearchTerm] = useState('');
 
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -102,8 +100,8 @@ const fetchProducts = async (searchTerm?: string) => {
   }
 };
    useEffect(() => {
-  fetchProducts();
-}, [page]);
+  fetchProducts(searchTerm);
+}, [page, searchTerm]);
 
    
 
@@ -154,16 +152,26 @@ useEffect(() => {
 
   const statuses = ['all', 'active', 'inactive', 'out_of_stock'];
 
- const filteredProducts = products.filter(product => {
-  const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        product.sku.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const matchesCategory = selectedCategory === 'all' || product.category_id === Number(selectedCategory);
 
-  const matchesStatus = selectedStatus === 'all' || product.status === selectedStatus;
+const filteredProducts = useMemo(() => {
+  return products.filter(product => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.sku.toLowerCase().includes(searchTerm.toLowerCase());
 
-  return matchesSearch && matchesCategory && matchesStatus;
-});
+    const matchesCategory =
+      selectedCategory === 'all' || product.category === selectedCategory;
+
+    const matchesStatus =
+      selectedStatus === 'all' || product.status === selectedStatus;
+
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+}, [products, searchTerm, selectedCategory, selectedStatus]);
+
+
+
 
 
   const getStatusColor = (status: Product['status']) => {
@@ -345,8 +353,6 @@ const [outOfStockProducts, setOutOfStockProducts] = useState(0);
   const loadStats = async () => {
     const allProducts = await fetchAllProducts();
 
-    setProducts(allProducts); // cập nhật full sản phẩm để lọc/tìm nếu muốn
-
     setTotalProducts(allProducts.length);
     setActiveProducts(allProducts.filter(p => p.status === 'active').length);
     setLowStockProducts(allProducts.filter(p => +p.stock < +p.min_stock && +p.stock > 0).length);
@@ -355,15 +361,21 @@ const [outOfStockProducts, setOutOfStockProducts] = useState(0);
 
   loadStats();
 }, []);
-   useEffect(() => {
-    if (initialSearch) {
-      console.log('🔍 Tìm sản phẩm với:', initialSearch);
-      fetchProducts(initialSearch); // Có tìm kiếm
-    } else {
-      fetchProducts(); // Không có tìm kiếm
-    }
-  }, [initialSearch,page]);
-  
+
+useEffect(() => {
+  if (location.state?.searchTerm) {
+    setSearchTerm(location.state.searchTerm);
+
+    // Sau khi dùng xong, xóa để tránh lặp lại khi chuyển trang
+    window.history.replaceState({}, document.title);
+  }
+}, [location.state]);
+
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setSearchTerm(e.target.value);
+};
+
 
 
   
@@ -440,7 +452,10 @@ const [outOfStockProducts, setOutOfStockProducts] = useState(0);
             <input
               type="text"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+               onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPage(1); // reset trang về đầu khi người dùng gõ mới
+                }}
               placeholder="Search products..."
               className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
             />
