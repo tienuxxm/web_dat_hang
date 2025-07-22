@@ -12,6 +12,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale'; // nếu dùng tiếng Việt
+
 import type { Pagetype } from '../layouts/DashboardLayout';
 interface HeaderProps {
   user: {
@@ -27,6 +30,8 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ user, onToggleSidebar, sidebarCollapsed,onPageChange }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
@@ -35,11 +40,6 @@ const Header: React.FC<HeaderProps> = ({ user, onToggleSidebar, sidebarCollapsed
 
   const navigate = useNavigate();
 
-  const notifications = [
-    { id: 1, type: 'order', message: 'New order #1234 received', time: '2 min ago' },
-    { id: 2, type: 'stock', message: 'Low stock alert: Product ABC', time: '5 min ago' },
-    { id: 3, type: 'order', message: 'Order #1233 completed', time: '10 min ago' },
-  ];
 
   const handleCreateOrder = () => {
     alert('Create Order functionality would be implemented here');
@@ -109,6 +109,36 @@ const searchAll = async (query: string) => {
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
+ useEffect(() => {
+  const fetchNotifications = async () => {
+    try {
+      const res = await api.get('/notifications');
+      const notiList = res.data.notifications || [];
+      setNotifications(notiList);
+    } catch (error) {
+      console.error('Lỗi khi lấy thông báo:', error);
+    }
+  };
+
+  fetchNotifications();
+}, []);
+
+  const handleToggleNotifications = async () => {
+  const nextState = !showNotifications;
+  setShowNotifications(nextState);
+
+  if (nextState) {
+    try {
+      await api.post('/notifications/mark-read'); // 👈 Gọi API BE cập nhật
+      setTimeout(() => {
+        setNotifications([]); // 👈 Dọn thông báo sau 30s (hoặc tuỳ ý)
+      }, 30000);
+    } catch (err) {
+      console.error('Lỗi mark-read:', err);
+    }
+  }
+};
+
 
 
 
@@ -116,7 +146,7 @@ const searchAll = async (query: string) => {
 
 
   return (
-    <header className="h-16 bg-gray-900/80 backdrop-blur-xl border-b border-gray-700/50 flex items-center px-6 relative z-20">
+    <header className="h-16 bg-gray-900/80 backdrop-blur-xl border-b border-gray-700/50 flex items-center px-6 relative z-20 ">
       {/* Left Section */}
       <div className="flex items-center space-x-4">
         {/* Sidebar Toggle */}
@@ -198,7 +228,7 @@ const searchAll = async (query: string) => {
         {/* Notifications */}
         <div className="relative">
           <button
-            onClick={() => setShowNotifications(!showNotifications)}
+            onClick={handleToggleNotifications}
             className="relative p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 text-gray-300 hover:text-white transition-all duration-200"
           >
             <Bell className="h-5 w-5" />
@@ -207,6 +237,8 @@ const searchAll = async (query: string) => {
                 {notifications.length}
               </span>
             )}
+            
+
           </button>
 
           {/* Notifications Dropdown */}
@@ -220,11 +252,13 @@ const searchAll = async (query: string) => {
                   <div key={notification.id} className="p-4 border-b border-gray-700/30 hover:bg-gray-700/30 transition-colors">
                     <div className="flex items-start space-x-3">
                       <div className={`w-2 h-2 rounded-full mt-2 ${
-                        notification.type === 'order' ? 'bg-blue-500' : 'bg-yellow-500'
-                      }`}></div>
+                          notification.type.includes('created') ? 'bg-blue-500' :
+                          notification.type.includes('updated') ? 'bg-yellow-500' :
+                            'bg-gray-400'                      
+                            }`}></div>
                       <div className="flex-1">
                         <p className="text-gray-300 text-sm">{notification.message}</p>
-                        <p className="text-gray-500 text-xs mt-1">{notification.time}</p>
+                        <p className="text-gray-500 text-xs mt-1">{formatDistanceToNow(new Date(notification.created_at), { addSuffix: true, locale: vi })}</p>
                       </div>
                     </div>
                   </div>
@@ -240,11 +274,8 @@ const searchAll = async (query: string) => {
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="flex items-center space-x-3 p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700/50 transition-all duration-200"
           >
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="h-8 w-8 rounded-full object-cover"
-            />
+           <User className="h-8 w-8 text-white bg-gray-700 rounded-full p-1" />
+
             <div className="hidden md:block text-left">
               <p className="text-white text-sm font-medium">{user.name}</p>
               <p className="text-gray-400 text-xs capitalize">{user.role}</p>

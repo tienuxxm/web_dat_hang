@@ -271,9 +271,9 @@ useEffect(() => {
   if (isGD && status === 'approved') return ['fulfilled', 'rejected'];
   if (isKD) {
     if (isManager) return ['draft', 'pending'];
-    if (isEmployee && status === 'draft') return ['pending'];
+    if (isEmployee && status === 'draft') return ['pending','draft'];
   }
-  if (isCU && status === 'pending') return ['draft', 'approved'];
+  if (isCU && status === 'pending') return ['draft', 'approved','pending'];
 
   return []; // không được đổi trạng thái
 };

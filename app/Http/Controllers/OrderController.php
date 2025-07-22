@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -15,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
+use App\Models\Notification;
 
 
 
@@ -270,6 +272,21 @@ class OrderController extends Controller
                 ->whereNotIn('product_id', $keptProductIds)
                 ->delete();
             DB::commit();
+            // 🔔 Gửi thông báo cho bộ phận có liên quan
+            $relatedUsers = User::where('id', '!=', $user->id)->get();
+
+            foreach ($relatedUsers as $u) {
+                Notification::create([
+                    'order_id'    => $order->id,
+                    'sender_id'   => $user->id,
+                    'user_id' => $u->id,
+                    'type'        => 'order_updated',
+                    'message'     => "Đơn hàng #{$order->order_number} vừa được chỉnh sửa bởi {$user->name}",
+                    'expires_at' => now()->addHours(1),
+
+                ]);
+            }
+
             return response()->json([
                 'message' => 'Order updated successfully.',
                 'order'   => $order->load('items')

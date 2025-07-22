@@ -380,11 +380,10 @@ useEffect(() => {
 
   
 
-    if (isLoading) return <p className="text-gray-400 p-6">Loading…</p>;
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative z-20">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -401,7 +400,7 @@ useEffect(() => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:grid-cols-4 gap-6">
         <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div>

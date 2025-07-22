@@ -9,6 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;         
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\NotificationController;
 
 /* ---------- PUBLIC ---------- */
 Route::post('register', [AuthController::class, 'register']);
@@ -53,6 +54,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('{order}',  'show'); 
 });
     Route::post('/export-merged-orders-multi-months', [ExportController::class, 'exportMergedOrdersMultipleMonths']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/mark-read', [NotificationController::class, 'markRead']);
 
 
        
