@@ -66,11 +66,13 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ mode }) => {
   const fetchOrders = async (searchTerm?:string) => {
       setLoading(true);
       try {
-        const res = await api.get('/orders',{params: { page,q: searchTerm ||''} });
+        const res = await api.get('/orders',{params: {page:page, q: searchTerm ||''} });
               const { data, current_page, last_page,total } = res.data;
+          console.log('Fetched:', res.data);
 
-        
-        const mapped = (res.data.data || []).map((o: any) => ({
+        console.log('Fetching with', { page, search });
+
+        const mapped = Object.values(res.data.data || []).map((o: any) => ({
           id: String(o.id),
           orderNumber: o.order_number,
           supplier_name: o.supplier_name || '',
@@ -99,13 +101,8 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ mode }) => {
       } finally {
         setLoading(false);
       }
+      
     };
- 
-
-    
-
-
-
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState('all');
   const [showModal, setShowModal] = useState(false);
@@ -226,7 +223,7 @@ const handleEditOrder = async (order: Order) => {
       paymentStatus: apiOrder.payment_status,
       shippingAddress: apiOrder.shipping_address,
       orderDate: apiOrder.order_date,
-      estimatedDelivery: apiOrder.estimated_delivery ?? '',
+      estimated_delivery: apiOrder.estimated_delivery ?? '',
       notes: apiOrder.notes ?? '',
       subtotal: Number(apiOrder.subtotal),
       tax: Number(apiOrder.tax),
@@ -315,7 +312,7 @@ function mapOrderFromApi(o: any): Order {
         })),
         status: orderData.status,
         payment_status: orderData.payment_status,
-        estimatedDelivery: orderData.estimatedDelivery,
+        estimated_delivery: orderData.estimated_delivery,
         shipping: orderData.shipping,
         notes: orderData.notes,
       };
@@ -370,20 +367,18 @@ const fetchMonthlyOrders = async () => {
       }
     };
 
-// 🚦 Tự động xử lý khi `mode` thay đổi
 useEffect(() => {
-      // ✅ Reset toàn bộ liên quan
       setOrders([]);
       setMonthlyOrders([]);
       setSelectedOrders([]);
       setSelectedMonths([]);
 
       if (mode === 'normal') {
-        fetchOrders();
+        fetchOrders(search);
       } else if (mode === 'monthly') {
         fetchMonthlyOrders();
       }
-    }, [mode, page, currentUser]);
+    }, [mode, page, currentUser,search]);
 
 const toggleMonthSelection = (month: string) => {
   setSelectedMonths(prev =>
@@ -468,14 +463,15 @@ const processingLabel =
     ? 'Đơn đang giao (Fulfilled)'
     : 'Chưa rõ';
 useEffect(() => {
-    if (initialSearch) {
-      console.log('🔍 Tìm đơn hàng với:', initialSearch);
-      setSearch(initialSearch);
-      fetchOrders(initialSearch); // Có search
-    } else {
-      fetchOrders(); // Không search
-    }
-  }, [initialSearch, page]); // 👈 thêm `page` nếu có phân trang
+  if (initialSearch) {
+    setSearch(initialSearch);
+  }
+}, [initialSearch]);
+
+useEffect(() => {
+  fetchOrders(search);
+}, [search, page]);
+
 
     
 

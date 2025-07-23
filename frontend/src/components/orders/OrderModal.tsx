@@ -28,7 +28,7 @@ export type PaymentStatus = 'pending'| 'paid'| 'failed'| 'refunded';
   items: { productCode: string; quantity: number }[];
   status: OrderStatus;
   payment_status: PaymentStatus;
-  estimatedDelivery: string;
+  estimated_delivery: string;
   shipping: number;
   notes: string;
 }
@@ -191,7 +191,7 @@ useEffect(() => {
       })),
       status: formData.status||'draft', // Mặc định là 'draft' nếu không có
       payment_status: formData.paymentStatus||'pending', // Mặc định là 'pending' nếu không có
-      estimatedDelivery: formData.estimatedDelivery,
+      estimated_delivery: formData.estimatedDelivery,
       shipping: formData.shipping,
       notes: formData.notes
     };

@@ -184,7 +184,7 @@ class OrderController extends Controller
             'items.*.quantity'    => $req . '|integer|min:1',
             'status'              => [$req, Rule::in(Order::STATUSES)],
             'payment_status'       => [$req, Rule::in(Order::PAYMENT_STATUSES)],
-            'estimatedDelivery'   => $req . '|date|after_or_equal:orderDate',
+            'estimated_delivery'   => $req . '|date|after_or_equal:orderDate',
             'shipping'            => 'sometimes|numeric|min:0',
             'notes'               => 'sometimes|string'
         ];
