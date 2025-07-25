@@ -204,16 +204,8 @@ const filteredProducts = useMemo(() => {
   };
 
   const handleDeleteProduct = async (productId: string) => {
-      const result = await Swal.fire({
-        title: 'Bạn có chắc muốn xóa?',
-        text: `Đơn hàng ${order.orderNumber} sẽ bị xóa`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Xóa',
-        cancelButtonText: 'Hủy',
-      });
-    
-      if (!result.isConfirmed) return;
+         if (!confirm('Bạn chắc chắn muốn xóa sản phẩm này không?')) return;
+
       try {
       await api.put(`/products/${productId}/status`, { status: 'inactive' });
       // Sau khi đổi status → refetch lại
