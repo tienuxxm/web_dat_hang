@@ -16,7 +16,8 @@ interface Product {
   name: string;
   price: number;
   barcode: string; 
-  color: string; // Thêm color
+  color: string; 
+  status:string;// Thêm color
 }
 // Trong OrderModal.tsx hoặc file types.ts nếu tách riêng
 export type OrderStatus = 'draft' | 'pending' | 'approved'| 'rejected'| 'fulfilled' | 'inactive';
@@ -92,30 +93,38 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onSave, onClose }) => {
   const  statuses :OrderStatus[]= ['draft' , 'pending'  ,'approved','rejected', 'fulfilled' , 'inactive'];
   const paymentStatuses :PaymentStatus[]= ['pending', 'paid', 'failed', 'refunded'];
 
-  useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const res = await api.get('/products?per_page=1000');
-      console.log('📦 Products response:', res.data);
+    useEffect(() => {
+      const fetchProducts = async () => {
+        try {
+          const res = await api.get('/products?per_page=1000');
+          console.log('📦 Products response:', res.data);
+          const all = res.data.products || [];
 
-      // 👇 Phải lấy res.data.products thay vì res.data
-      setProducts(res.data.products || []);
-    } catch (e) {
-      console.error('❌ Failed to load products', e);
-      setProducts([]); // fallback rỗng
-    } finally {
-      setLoadingProducts(false);
-    }
-  };
+          // ✅ Lấy sản phẩm có status là 'active' hoặc 'out_of_stock'
+          const filtered = all.filter(
+            (p: Product) => p.status === 'active' || p.status === 'out_of_stock'
+          );
 
-  fetchProducts();
-}, []);
+          setProducts(filtered);
+        } catch (e) {
+          console.error('❌ Failed to load products', e);
+          setProducts([]);
+        } finally {
+          setLoadingProducts(false);
+        }
+      };
+
+      fetchProducts();
+    }, []);
+
 
 
  useEffect(() => {
     console.log("🔥 Order received in modal:", order);
 
   if (order) {
+        console.log('🧪 estimatedDelivery:', order.estimatedDelivery);
+
         setFormData({
         orderNumber: order.orderNumber,
         supplier_name: order.supplierName ?? '',
@@ -171,10 +180,7 @@ useEffect(() => {
     const deliveryDate = new Date(formData.estimatedDelivery);
 
   // Kiểm tra ngày hợp lệ
-      if (isNaN(orderDate.getTime()) || isNaN(deliveryDate.getTime())) {
-        toast.error("Ngày đặt hàng hoặc ngày giao hàng không hợp lệ.");
-        return;
-      }
+      
 
       if (deliveryDate <= orderDate) {
         toast.error("Ngày giao hàng phải sau ngày đặt hàng.");
@@ -268,15 +274,24 @@ useEffect(() => {
   const isManager = ['truong_phong', 'pho_phong'].includes(role);
   const isEmployee = role === 'nhan_vien_chinh_thuc';
 
-  if (isGD && status === 'approved') return ['fulfilled', 'rejected'];
+  if (isGD && status === 'approved') return ['fulfilled', 'rejected','approved'];
   if (isKD) {
     if (isManager) return ['draft', 'pending'];
     if (isEmployee && status === 'draft') return ['pending','draft'];
   }
-  if (isCU && status === 'pending') return ['draft', 'approved','pending'];
+  if (isCU &&( status === 'pending'|| status === 'rejected')) return ['draft', 'approved','pending','rejected'];
 
   return []; // không được đổi trạng thái
 };
+  const isKinhDoanh = currentUser.department?.name_department === 'KINH_DOANH';
+  const isCungUng = currentUser.department?.name_department === 'CUNG_UNG';
+  const isGiamDoc = currentUser.role.name_role === 'giam_doc';
+  const isDraft = order === null || order?.status === 'draft';
+
+  const canEditAll = isKinhDoanh && isDraft;
+  const canEditQuantityOnly = isCungUng || isGiamDoc;
+  const canSelectDeliveryDate = isCungUng && order?.status === 'pending';
+
 
 
 
@@ -309,7 +324,7 @@ useEffect(() => {
                 value={formData.orderNumber}
                 onChange={handleChange}
                 required
-                disabled={!!order} // Không cho sửa nếu là đơn đã có
+                disabled // Không cho sửa nếu là đơn đã có
                 className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
                 placeholder="Enter order number"
               />
@@ -341,6 +356,8 @@ useEffect(() => {
                   required
                   className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
                   placeholder="Enter supplier name"
+                  disabled={!canEditAll&& !!order}
+
                 />
             </div>
             <div>
@@ -353,6 +370,8 @@ useEffect(() => {
                 required
                 className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
                 placeholder="Enter shipping address"
+                disabled={!canEditAll&& !!order}
+
               />
             </div>
           </div>
@@ -361,14 +380,17 @@ useEffect(() => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-white">Order Items</h3>
+             {isKinhDoanh && isDraft  &&(
               <button
                 type="button"
                 onClick={addItem}
+
                 className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 <Plus className="h-4 w-4" />
                 <span>Add Item</span>
               </button>
+             )}
             </div>
 
             {formData.items.map((item, index) => (
@@ -379,6 +401,7 @@ useEffect(() => {
                     <select
                       value={item.productCode}
                       onChange={(e) => updateItem(index, 'productCode', e.target.value)}
+                      disabled={!canEditAll}
                       className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                     >
                       <option value="">Select a product</option>
@@ -396,6 +419,7 @@ useEffect(() => {
                       min="1"
                       value={item.quantity}
                       onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value) || 1)}
+                      disabled={!(canEditAll || canEditQuantityOnly)}
                       className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                     />
                   </div>
@@ -405,11 +429,13 @@ useEffect(() => {
                       type="number"
                       step="0.01"
                       value={item.price}
+                      disabled
                       onChange={(e) => updateItem(index, 'price', parseFloat(e.target.value) || 0)}
                       className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                     />
                   </div>
                   <div>
+                    {canEditAll &&(
                     <button
                       type="button"
                       onClick={() => removeItem(index)}
@@ -417,6 +443,7 @@ useEffect(() => {
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
+                  )}
                   </div>
                 </div>
               </div>
@@ -463,7 +490,10 @@ useEffect(() => {
                 value={formData.status}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                disabled={!(canEditAll || canEditQuantityOnly)}
+
               >
+                
                 {getAvailableStatuses(order).map(status => (
                   <option key={status} value={status}>{status.toUpperCase()}</option>
                 ))}
@@ -475,6 +505,7 @@ useEffect(() => {
                 name="paymentStatus"
                 value={formData.paymentStatus}
                 onChange={handleChange}
+                disabled={!canEditAll && !!order}
                 className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
               >
                 {paymentStatuses.map(status => (
@@ -482,6 +513,7 @@ useEffect(() => {
                 ))}
               </select>
             </div>
+            {isCungUng &&(
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">Estimated Delivery</label>
               <input
@@ -490,9 +522,11 @@ useEffect(() => {
                 value={formData.estimatedDelivery}
                 min={formData.orderDate}
                 onChange={handleChange}
+                disabled={!canSelectDeliveryDate}
                 className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
               />
             </div>
+            )}
           </div>
 
           {/* Notes */}
@@ -504,6 +538,8 @@ useEffect(() => {
               onChange={handleChange}
               rows={3}
               className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
+              disabled={!(canEditAll || canEditQuantityOnly)} 
+
               placeholder="Enter any special instructions or notes"
             />
           </div>
