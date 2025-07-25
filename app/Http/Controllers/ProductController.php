@@ -80,8 +80,9 @@ class ProductController extends Controller
         // 2️⃣ Lọc theo quyền
         $roleName = $user->role->name_role;
 
-             if (!in_array($roleName, ['truong_phong', 'pho_phong'])) {
-        $query->whereIn('status', ['active', 'out_of_stock']);}
+      if (!in_array($roleName, ['truong_phong', 'pho_phong'])) {
+        $query->whereIn('status', ['active', 'out_of_stock']);
+}
 
         // 3️⃣ Phân trang (mặc định 10/sp, có thể truyền ?per_page=20 từ FE)
         $perPage = $request->integer('per_page', 10);
@@ -134,7 +135,7 @@ class ProductController extends Controller
             'description' => 'sometimes|string|nullable',
             'image'       => 'nullable|image|max:2048',
             'category_id' => 'sometimes|exists:categories,id',
-            'status'      => 'in:active,inactive',
+            'status'      => 'in:active,inactive,out_of_stock',
             'barcode'     => 'nullable|string|max:255',
             'color'       => 'nullable|string|max:50', 
         ]);
