@@ -2,10 +2,10 @@ import React, { useState ,useEffect,useMemo} from 'react';
 import api from '../../services/api';
 import {ArrowUpCircle, Plus, Search, Filter, Edit, Trash2, Eye, Package, DollarSign, TrendingUp, AlertTriangle } from 'lucide-react';
 import ProductModal from './ProductModal';
-import { useLocation,useNavigate } from 'react-router-dom';
+import { useLocation} from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import Swal from 'sweetalert2';
 
-import { toast } from 'react-hot-toast';
 
 
 
@@ -50,7 +50,6 @@ const [searchTerm, setSearchTerm] = useState('');
 // const department = user?.department?.name_department;
 
   const isManager = ['truong_phong', 'pho_phong'].includes(role);
-  const isStaff    = ['nhan_vien_chinh_thuc', 'intern'].includes(role);
   console.log('role =', role);          // 'truong_phong'?
   console.log('isManager =', isManager); // true?
 
@@ -65,6 +64,9 @@ const fetchProducts = async (searchTerm?: string) => {
     let endpoint = `/products?page=${page}&per_page=${pagination.per_page}`;
     if (searchTerm) {
       endpoint += `&q=${encodeURIComponent(searchTerm)}`;
+    }
+    if (isManager) {
+      endpoint += `&withInactive=1`;
     }
 
     const res = await api.get(endpoint);
@@ -205,17 +207,17 @@ const filteredProducts = useMemo(() => {
 
   const handleDeleteProduct = async (productId: string) => {
       const result = await Swal.fire({
-            title: 'Xác nhận',
-            text: 'Bạn chắc chắn muốn ẩn sản phẩm này không?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Đồng ý',
-            cancelButtonText: 'Huỷ',
-            reverseButtons: true,
-          });
-    
-      if (!result.isConfirmed) return;
-      try {
+        title: 'Xác nhận',
+        text: 'Bạn chắc chắn muốn ẩn sản phẩm này không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Đồng ý',
+        cancelButtonText: 'Huỷ',
+        reverseButtons: true,
+      });
+
+  if (!result.isConfirmed) return;
+    try {
       await api.put(`/products/${productId}/status`, { status: 'inactive' });
       // Sau khi đổi status → refetch lại
       const res = await api.get('/products' + (isManager ? '?withInactive=1' : ''));
@@ -240,7 +242,7 @@ const filteredProducts = useMemo(() => {
       const message = e?.response?.data?.message || 'Ẩn sản phẩm thất bại!';
       toast.error(message); // 👈 Hiển thị message thực tế từ backend
       console.error(e);
-}
+      }
   };
   const handleRestoreProduct = async (productId: string) => {
   try {
@@ -384,9 +386,6 @@ useEffect(() => {
 }, [location.state]);
 
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setSearchTerm(e.target.value);
-};
 
 
 
@@ -579,7 +578,7 @@ useEffect(() => {
 
                     <td className="p-4">
                       <div className="flex items-center space-x-2">
-                        {product.status === 'active' && (
+                        {['active', 'out_of_stock'].includes(product.status) && (
                           <>
                             <button
                               onClick={() => handleEditProduct(product)}
