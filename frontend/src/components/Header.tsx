@@ -146,7 +146,7 @@ const searchAll = async (query: string) => {
 
 
   return (
-    <header className="h-16 bg-gray-900/80 backdrop-blur-xl border-b border-gray-700/50 flex items-center px-6 relative z-20 ">
+    <header className="h-16 bg-gray-900/80 backdrop-blur-xl border-b border-gray-700/50 flex items-center px-6 relative z-30 ">
       {/* Left Section */}
       <div className="flex items-center space-x-4">
         {/* Sidebar Toggle */}
