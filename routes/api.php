@@ -52,10 +52,13 @@ Route::middleware('auth:api')->group(function () {
     Route::match(['put', 'patch'], '{order}', 'update');
     Route::delete('{order}','destroy');
     Route::get('{order}',  'show'); 
+    Route::post ('import-multiple','importMultipleOrders');
 });
     Route::post('/export-merged-orders-multi-months', [ExportController::class, 'exportMergedOrdersMultipleMonths']);
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/mark-read', [NotificationController::class, 'markRead']);
+    Route::post('/export-order', [ExportController::class, 'exportOrder']);
+
 
 
        
