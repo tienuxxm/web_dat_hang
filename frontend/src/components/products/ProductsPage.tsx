@@ -235,6 +235,7 @@ const filteredProducts = useMemo(() => {
         description: p.description ?? '',
         createdAt: p.created_at,
         color: p.color, 
+        barcode:p.barcode,
         sales: Number(p.sales),
       }));
       setProducts(mapped);
@@ -262,6 +263,7 @@ const filteredProducts = useMemo(() => {
       description: p.description ?? '',
       createdAt: p.created_at,
       color: p.color, // Thêm color
+    barcode:p.barcode,
       sales: Number(p.sales),
     }));
     setProducts(mapped);
