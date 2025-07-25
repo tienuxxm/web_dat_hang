@@ -1,4 +1,4 @@
-import React, { useState ,useEffect,useMemo} from 'react';
+import React, { useState ,useEffect,useMemo,useRef} from 'react';
 import { Plus, Search, Filter, Edit, Trash2, Eye, Package, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import api from '../../services/api';
 
@@ -61,6 +61,8 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ mode }) => {
   const [totalOrders, setTotalOrders] = useState(0);
   const [monthlyOrders, setMonthlyOrders] = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState(getCurrentUser());
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
 
 
 
@@ -206,7 +208,7 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ mode }) => {
       if (isManager) return true;
       if (isEmployee) return status === 'draft';
     }
-    if (isCU) return ['draft', 'pending'].includes(status);
+    if (isCU) return ['draft', 'pending','rejected'].includes(status);
     return false;
   };
 
@@ -224,7 +226,7 @@ const handleEditOrder = async (order: Order) => {
       paymentStatus: apiOrder.payment_status,
       shippingAddress: apiOrder.shipping_address,
       orderDate: apiOrder.order_date,
-      estimated_delivery: apiOrder.estimated_delivery ?? '',
+      estimatedDelivery: apiOrder.estimated_delivery ?? '',
       notes: apiOrder.notes ?? '',
       subtotal: Number(apiOrder.subtotal),
       tax: Number(apiOrder.tax),
@@ -250,7 +252,7 @@ const handleEditOrder = async (order: Order) => {
 
 
   const handleDeleteOrder = async (order: Order) => {
-    const result = await Swal.fire({
+  const result = await Swal.fire({
       title: 'Bạn có chắc muốn xóa?',
       text: `Đơn hàng ${order.orderNumber} sẽ bị xóa`,
       icon: 'warning',
@@ -260,7 +262,6 @@ const handleEditOrder = async (order: Order) => {
     });
 
     if (!result.isConfirmed) return;
-
   try {
     const res = await api.delete(`/orders/${order.orderNumber}`);
     toast.success('Đã xóa đơn hàng');
@@ -342,23 +343,73 @@ function mapOrderFromApi(o: any): Order {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
   const toggleOrderSelection = (id: string) => {
-    setSelectedOrders(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
-  };
-const handleMergeOrders = async () => {
-  try {
-    const res = await api.patch('/orders/merge', {
-      order_ids: selectedOrders,
-    });
+        setSelectedOrders(prev =>
+          prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+      };
+    const handleMergeOrders = async () => {
+      try {
+        const res = await api.patch('/orders/merge', {
+          order_ids: selectedOrders,
+        });
 
-    toast.success('Gộp đơn thành công!');
-    setSelectedOrders([]);
-    fetchOrders(); // hoặc fetchMergedOrders nếu đang xem danh sách gộp
-  } catch (err: any) {
-    toast.error(err.response?.data?.message || 'Gộp đơn thất bại');
-  }
-};
+        toast.success('Gộp đơn thành công!');
+        setSelectedOrders([]);
+        fetchOrders(); // hoặc fetchMergedOrders nếu đang xem danh sách gộp
+      } catch (err: any) {
+        toast.error(err.response?.data?.message || 'Gộp đơn thất bại');
+      }
+    };
+  const handleExportOrders = async () => {
+    try {
+      const res = await api.post(
+        '/export-order',
+        { order_ids: selectedOrders },
+        { responseType: 'blob' }
+      );
+
+      const blob = new Blob([res.data], {
+        type:
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'orders.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Xuất đơn thất bại');
+    }
+  };
+
+const handleImportOrders = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await api.post('/orders/import-multiple', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        toast.success(`Đã tạo ${res.data.orders.length} đơn hàng`);
+        fetchOrders(); // gọi lại danh sách nếu cần
+      } catch (err: any) {
+        console.error('❌ Import lỗi:', err);
+        toast.error(err.response?.data?.message || 'Import thất bại');
+      } finally {
+        // reset file input để chọn lại được cùng file nếu cần
+        e.target.value = '';
+      }
+    };
+
+
+// Gợi ý: thêm input file ẩn ở cuối render
+
 const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
 
 
@@ -564,17 +615,41 @@ useEffect(() => {
             />
           </div>
           {selectedOrders.length > 0 && (
-          <button
-            onClick={handleMergeOrders}
-          className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
-          >
-            Gộp {selectedOrders.length} đơn đã chọn
-          </button>
+          <div className='flex items-center space-x-4'>
+            <button
+              onClick={handleMergeOrders}
+            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+            >
+              Gộp {selectedOrders.length} đơn đã chọn
+            </button>
+            <button
+              onClick={handleExportOrders}
+              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+            >
+              Export
+            </button>
+          </div>
         )}
+       
+
 
 
           {/* Filters */}
           <div className="flex items-center space-x-4">
+              <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImportOrders}
+              accept=".csv,.txt,.xlsx"
+              className="hidden"
+            />
+
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+            >
+              Import
+            </button>
             <select
               value={selectedStatus}
               onChange={e => setSelectedStatus(e.target.value)}
@@ -598,6 +673,7 @@ useEffect(() => {
                 </option>
               ))}
             </select>
+          
           </div>
         </div>
       </div>
