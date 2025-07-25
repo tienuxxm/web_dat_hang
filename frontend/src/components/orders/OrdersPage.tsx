@@ -249,7 +249,16 @@ const handleEditOrder = async (order: Order) => {
 
 
   const handleDeleteOrder = async (order: Order) => {
-    if (!window.confirm('Bạn có chắc muốn xóa đơn hàng này không?')) return;
+    const result = await Swal.fire({
+      title: 'Bạn có chắc muốn xóa?',
+      text: `Đơn hàng ${order.orderNumber} sẽ bị xóa`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy',
+    });
+
+    if (!result.isConfirmed) return;
 
   try {
     const res = await api.delete(`/orders/${order.orderNumber}`);
