@@ -3,6 +3,8 @@ import api from '../../services/api';
 import {ArrowUpCircle, Plus, Search, Filter, Edit, Trash2, Eye, Package, DollarSign, TrendingUp, AlertTriangle } from 'lucide-react';
 import ProductModal from './ProductModal';
 import { useLocation,useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
 import { toast } from 'react-hot-toast';
 
 
@@ -202,8 +204,17 @@ const filteredProducts = useMemo(() => {
   };
 
   const handleDeleteProduct = async (productId: string) => {
-    if (!confirm('Bạn chắc chắn muốn xóa sản phẩm này không?')) return;
-    try {
+      const result = await Swal.fire({
+        title: 'Bạn có chắc muốn xóa?',
+        text: `Đơn hàng ${order.orderNumber} sẽ bị xóa`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy',
+      });
+    
+      if (!result.isConfirmed) return;
+      try {
       await api.put(`/products/${productId}/status`, { status: 'inactive' });
       // Sau khi đổi status → refetch lại
       const res = await api.get('/products' + (isManager ? '?withInactive=1' : ''));
