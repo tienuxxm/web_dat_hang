@@ -169,72 +169,73 @@ const CustomersPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Customer Management</h1>
-          <p className="text-gray-400">Manage your customer database and relationships</p>
+          <h1 className="text-xl sm:text-3xl font-bold text-white mb-2">Customer Management</h1>
+          <p className="text-gray-400 text-sm sm:text-base">Manage your customer database and relationships</p>
         </div>
         <button
           onClick={handleAddCustomer}
-          className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+          className="flex items-center space-x-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
         >
           <Plus className="h-5 w-5" />
-          <span>Add Customer</span>
+          <span className="hidden sm:inline">Add Customer</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Total Customers</p>
-              <p className="text-white text-2xl font-bold">{totalCustomers}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Total Customers</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">{totalCustomers}</p>
             </div>
             <div className="p-3 bg-blue-500/20 rounded-xl">
-              <Mail className="h-6 w-6 text-blue-400" />
+              <Mail className="h-4 w-4 sm:h-6 sm:w-6 text-blue-400" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Active Customers</p>
-              <p className="text-white text-2xl font-bold">{activeCustomers}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Active Customers</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">{activeCustomers}</p>
             </div>
             <div className="p-3 bg-green-500/20 rounded-xl">
-              <Calendar className="h-6 w-6 text-green-400" />
+              <Calendar className="h-4 w-4 sm:h-6 sm:w-6 text-green-400" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Total Revenue</p>
-              <p className="text-white text-2xl font-bold">${totalRevenue.toLocaleString()}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Total Revenue</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">${totalRevenue.toLocaleString()}</p>
             </div>
             <div className="p-3 bg-purple-500/20 rounded-xl">
-              <DollarSign className="h-6 w-6 text-purple-400" />
+              <DollarSign className="h-4 w-4 sm:h-6 sm:w-6 text-purple-400" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Avg Order Value</p>
-              <p className="text-white text-2xl font-bold">${avgOrderValue.toFixed(0)}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Avg Order Value</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">${avgOrderValue.toFixed(0)}</p>
             </div>
             <div className="p-3 bg-orange-500/20 rounded-xl">
-              <DollarSign className="h-6 w-6 text-orange-400" />
+              <DollarSign className="h-4 w-4 sm:h-6 sm:w-6 text-orange-400" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-4">
+      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
+        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
           {/* Search */}
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -242,7 +243,7 @@ const CustomersPage: React.FC = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search customers..."
+              placeholder="Search..."
               className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
             />
           </div>
@@ -251,7 +252,7 @@ const CustomersPage: React.FC = () => {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+            className="px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
           >
             {statuses.map(status => (
               <option key={status} value={status}>
@@ -263,67 +264,67 @@ const CustomersPage: React.FC = () => {
       </div>
 
       {/* Customers Table */}
-      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl overflow-hidden">
+      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl overflow-hidden overflow-x-auto">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[800px]">
             <thead className="bg-gray-800/50 border-b border-gray-700/50">
               <tr>
-                <th className="text-left p-4 text-gray-300 font-medium">Customer</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Contact</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Location</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Orders</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Total Spent</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Last Order</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Status</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Actions</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Customer</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Contact</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Location</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Orders</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Total Spent</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Last Order</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Status</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredCustomers.map((customer) => (
                 <tr key={customer.id} className="border-b border-gray-700/30 hover:bg-gray-800/30 transition-colors">
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     <div className="flex items-center space-x-3">
                       <img
                         src={customer.avatar}
                         alt={customer.name}
-                        className="w-10 h-10 rounded-full object-cover"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
                       />
                       <div>
-                        <p className="text-white font-medium">{customer.name}</p>
-                        <p className="text-gray-400 text-sm">Joined {customer.joinDate}</p>
+                        <p className="text-white font-medium text-xs sm:text-sm">{customer.name}</p>
+                        <p className="text-gray-400 text-xs">Joined {customer.joinDate}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2 text-gray-300">
                         <Mail className="h-4 w-4" />
-                        <span className="text-sm">{customer.email}</span>
+                        <span className="text-xs sm:text-sm">{customer.email}</span>
                       </div>
-                      <div className="flex items-center space-x-2 text-gray-300">
+                      <div className="flex items-center space-x-2 text-gray-300 hidden sm:flex">
                         <Phone className="h-4 w-4" />
-                        <span className="text-sm">{customer.phone}</span>
+                        <span className="text-xs sm:text-sm">{customer.phone}</span>
                       </div>
                     </div>
                   </td>
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     <div className="flex items-center space-x-2 text-gray-300">
                       <MapPin className="h-4 w-4" />
                       <div>
-                        <p className="text-sm">{customer.city}</p>
+                        <p className="text-xs sm:text-sm">{customer.city}</p>
                         <p className="text-xs text-gray-400">{customer.country}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="p-4 text-white font-semibold">{customer.totalOrders}</td>
-                  <td className="p-4 text-white font-semibold">${customer.totalSpent.toLocaleString()}</td>
-                  <td className="p-4 text-gray-300">{customer.lastOrder || 'Never'}</td>
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4 text-white font-semibold text-xs sm:text-sm">{customer.totalOrders}</td>
+                  <td className="p-2 sm:p-4 text-white font-semibold text-xs sm:text-sm">${customer.totalSpent.toLocaleString()}</td>
+                  <td className="p-2 sm:p-4 text-gray-300 text-xs sm:text-sm">{customer.lastOrder || 'Never'}</td>
+                  <td className="p-2 sm:p-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(customer.status)}`}>
                       {customer.status.toUpperCase()}
                     </span>
                   </td>
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => handleEditCustomer(customer)}
@@ -347,7 +348,7 @@ const CustomersPage: React.FC = () => {
 
         {filteredCustomers.length === 0 && (
           <div className="text-center py-12">
-            <Mail className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <Mail className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-400">No customers found matching your criteria</p>
           </div>
         )}

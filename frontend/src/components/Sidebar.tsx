@@ -19,6 +19,7 @@ interface SidebarProps {
   userDepartment: string;
   currentPage: string;
   onPageChange: (page: Pagetype) => void;
+  isMobile?: boolean;
 }
 
 interface MenuItem {
@@ -32,7 +33,14 @@ interface MenuItem {
   page?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ collapsed, userRole, userDepartment,currentPage, onPageChange }) => {
+const Sidebar: React.FC<SidebarProps> = ({ 
+  collapsed, 
+  userRole, 
+  userDepartment, 
+  currentPage, 
+  onPageChange,
+  isMobile = false 
+}) => {
    console.log('userRole', userRole);
    console.log('userDepartment', userDepartment);
 
@@ -200,14 +208,28 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, userRole, userDepartment,c
   };
 
   return (
-    <aside className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-gray-900/80 backdrop-blur-xl border-r border-gray-700/50 transition-all duration-300 z-10 ${
-      collapsed ? 'w-16' : 'w-64'
+    <aside className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-gray-900/80 backdrop-blur-xl border-r border-gray-700/50 transition-all duration-300 z-20 ${
+      isMobile 
+        ? collapsed 
+          ? '-translate-x-full w-64' 
+          : 'translate-x-0 w-64'
+        : collapsed 
+          ? 'w-16' 
+          : 'w-64'
     }`}>
       <div className="p-4 h-full overflow-y-auto">
         <nav className="space-y-2">
           {menuItems.map(item => renderMenuItem(item))}
         </nav>
       </div>
+      
+      {/* Mobile overlay */}
+      {isMobile && !collapsed && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-[-1]"
+          onClick={() => onPageChange(currentPage)} // This will trigger sidebar close
+        />
+      )}
     </aside>
   );
 };

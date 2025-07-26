@@ -16,9 +16,24 @@ export type Pagetype =  'dashboard' | 'orders' | 'customers' | 'products' | 'rep
 export default function DashboardLayout() {
   const storedUser = localStorage.getItem('user');
   const user = storedUser ? JSON.parse(storedUser) : null;
-  const [currentPage, setCurrentPage] = useState<Pagetype>('dashboard'); // Giả sử bạn có state để quản lý trang hiện tại
+  const [currentPage, setCurrentPage] = useState<Pagetype>('dashboard');
 
   const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth < 768) {
+        setCollapsed(true); // Auto-collapse on mobile
+      }
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const renderCurrentPage = () => {
     switch (currentPage) {
@@ -83,15 +98,18 @@ export default function DashboardLayout() {
 
         <div className="flex flex-1">
           <Sidebar 
-          collapsed={collapsed}
-          userRole={user.role}
-          userDepartment={user.department}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
+            collapsed={collapsed}
+            userRole={user.role}
+            userDepartment={user.department}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            isMobile={isMobile}
           />
 
-          <main className={`flex-1 transition-all duration-300 ${collapsed ? 'ml-16' : 'ml-64'}`}>
-            <div className="p-6">
+          <main className={`flex-1 transition-all duration-300 ${
+            isMobile ? 'ml-0' : collapsed ? 'ml-16' : 'ml-64'
+          }`}>
+            <div className="p-3 sm:p-6">
               {renderCurrentPage()}
             </div>
           </main>

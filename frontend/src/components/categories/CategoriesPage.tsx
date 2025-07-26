@@ -86,34 +86,35 @@ useEffect(() => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Category Management</h1>
-          <p className="text-gray-400">Manage product categories</p>
+          <h1 className="text-xl sm:text-3xl font-bold text-white mb-2">Category Management</h1>
+          <p className="text-gray-400 text-sm sm:text-base">Manage product categories</p>
         </div>
         <button
           onClick={() => { setEditingCategory(null); setShowForm(true); }}
-          className="flex items-center px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
+          className="flex items-center px-3 sm:px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm sm:text-base"
         >
           <Plus className="h-5 w-5 mr-2" />
-          Add Category
+          <span className="hidden sm:inline">Add Category</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
       {/* Search + Filter */}
-      <div className="flex flex-col md:flex-row gap-4 bg-gray-900/40 border border-gray-700/50 p-4 rounded-xl">
+      <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:gap-4 bg-gray-900/40 border border-gray-700/50 p-3 sm:p-4 rounded-xl">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search category..."
+            placeholder="Search..."
             className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400"
           />
         </div>
         <select
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value)}
-          className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white"
+          className="px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white text-sm sm:text-base"
         >
           <option value="all">All Status</option>
           <option value="active">ACTIVE</option>
@@ -123,21 +124,21 @@ useEffect(() => {
 
       {/* Table */}
       <div className="overflow-x-auto bg-gray-900/40 border border-gray-700/50 rounded-xl">
-        <table className="w-full text-sm">
+        <table className="w-full text-xs sm:text-sm min-w-[600px]">
           <thead className="bg-gray-800/50 border-b border-gray-700/50">
             <tr>
-              <th className="text-left text-gray-300 p-4">Name</th>
-              <th className="text-left text-gray-300 p-4">Description</th>
-              <th className="text-left text-gray-300 p-4">Status</th>
-              <th className="text-left text-gray-300 p-4">Actions</th>
+              <th className="text-left text-gray-300 p-2 sm:p-4">Name</th>
+              <th className="text-left text-gray-300 p-2 sm:p-4">Description</th>
+              <th className="text-left text-gray-300 p-2 sm:p-4">Status</th>
+              <th className="text-left text-gray-300 p-2 sm:p-4">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredCategories.map(cat => (
               <tr key={cat.id} className="border-b border-gray-700/30 hover:bg-gray-800/30">
-                <td className="p-4 text-white">{cat.name}</td>
-                <td className="p-4 text-gray-300">{cat.description}</td>
-                <td className="p-4">
+                <td className="p-2 sm:p-4 text-white">{cat.name}</td>
+                <td className="p-2 sm:p-4 text-gray-300">{cat.description}</td>
+                <td className="p-2 sm:p-4">
                   <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
                     cat.status === 'active' ? 'text-green-400 bg-green-500/10 border-green-500/30' :
                     'text-gray-400 bg-gray-500/10 border-gray-500/30'
@@ -145,7 +146,8 @@ useEffect(() => {
                     {cat.status.toUpperCase()}
                   </span>
                 </td>
-                <td className="p-4 flex space-x-2">
+                <td className="p-2 sm:p-4">
+                  <div className="flex space-x-2">
                   <button onClick={() => { setEditingCategory(cat); setShowForm(true); }}
                     className="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10">
                     <Edit className="w-4 h-4" />
@@ -154,6 +156,7 @@ useEffect(() => {
                     className="p-2 rounded-lg text-red-400 hover:bg-red-500/10">
                     <Trash2 className="w-4 h-4" />
                   </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -162,7 +165,7 @@ useEffect(() => {
 
         {filteredCategories.length === 0 && (
           <div className="text-center text-gray-400 py-6">
-            <Folder className="mx-auto w-8 h-8 mb-2" />
+            <Folder className="mx-auto w-6 h-6 sm:w-8 sm:h-8 mb-2" />
             No categories found
           </div>
         )}

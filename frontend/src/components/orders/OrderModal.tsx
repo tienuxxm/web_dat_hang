@@ -299,10 +299,10 @@ useEffect(() => {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto mx-4">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
-          <h2 className="text-2xl font-bold text-white">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-700/50">
+          <h2 className="text-lg sm:text-2xl font-bold text-white">
             { readOnly ?'View Order' : order ? 'Edit Order' : 'Create New Order'}
           </h2>
           <button
@@ -314,11 +314,11 @@ useEffect(() => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           {/* Order Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Order Number</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Order Number</label>
               <input
                 type="text"
                 name="orderNumber"
@@ -326,12 +326,12 @@ useEffect(() => {
                 onChange={handleChange}
                 required
                 disabled // Không cho sửa nếu là đơn đã có
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
                 placeholder="Enter order number"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Order Date</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Order Date</label>
               <input
                 type="date"
                 name="orderDate"
@@ -339,37 +339,37 @@ useEffect(() => {
                 onChange={handleChange}
                 required
                 disabled={!!order} // Không cho sửa nếu là đơn đã có
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
               />
             </div>
           </div>
 
           {/* Customer Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white">Supplier Information</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-white">Supplier Information</h3>
             <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Supplier Name</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Supplier Name</label>
                 <input
                   type="text"
                   name="supplier_name"
                   value={formData.supplier_name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
                   placeholder="Enter supplier name"
                   disabled={!canEditAll&& !!order}
 
                 />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Shipping Address</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Shipping Address</label>
               <input
                 type="text"
                 name="shippingAddress"
                 value={formData.shippingAddress}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
                 placeholder="Enter shipping address"
                 disabled={!canEditAll&& !!order}
 
@@ -380,29 +380,30 @@ useEffect(() => {
           {/* Order Items */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-white">Order Items</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-white">Order Items</h3>
              {isKinhDoanh && isDraft  && !readOnly &&(
               <button
                 type="button"
                 onClick={addItem}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base"
               >
                 <Plus className="h-4 w-4" />
-                <span>Add Item</span>
+                <span className="hidden sm:inline">Add Item</span>
+                <span className="sm:hidden">Add</span>
               </button>
              )}
             </div>
 
             {formData.items.map((item, index) => (
-              <div key={index} className="bg-gray-800/30 rounded-xl p-4">
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Product</label>
+              <div key={index} className="bg-gray-800/30 rounded-xl p-3 sm:p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                  <div className="sm:col-span-2 lg:col-span-2">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Product</label>
                     <select
                       value={item.productCode}
                       onChange={(e) => updateItem(index, 'productCode', e.target.value)}
                       disabled={!canEditAll}
-                      className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
                     >
                       <option value="">Select a product</option>
                       {products.map(product => (
@@ -413,28 +414,28 @@ useEffect(() => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Quantity</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Quantity</label>
                     <input
                       type="number"
                       min="1"
                       value={item.quantity}
                       onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value) || 1)}
                       disabled={!(canEditAll || canEditQuantityOnly)}
-                      className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Price</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Price</label>
                     <input
                       type="number"
                       step="0.01"
                       value={item.price}
                       disabled
                       onChange={(e) => updateItem(index, 'price', parseFloat(e.target.value) || 0)}
-                      className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
                     />
                   </div>
-                  <div>
+                  <div className="flex justify-center sm:justify-start">
                     {canEditAll &&(
                     <button
                       type="button"
@@ -452,17 +453,17 @@ useEffect(() => {
 
           {/* Order Summary */}
           <div className="bg-gray-800/30 rounded-xl p-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Order Summary</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-white mb-4">Order Summary</h3>
             <div className="space-y-2">
-              <div className="flex justify-between text-gray-300">
+              <div className="flex justify-between text-gray-300 text-sm sm:text-base">
                 <span>Subtotal:</span>
                 <span>${formData.subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-gray-300">
+              <div className="flex justify-between text-gray-300 text-sm sm:text-base">
                 <span>Tax (8%):</span>
                 <span>${formData.tax.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between items-center text-gray-300">
+              <div className="flex justify-between items-center text-gray-300 text-sm sm:text-base">
                 <span>Shipping:</span>
                 <input
                   type="number"
@@ -470,11 +471,11 @@ useEffect(() => {
                   step="100"
                   value={formData.shipping ?? 0}
                   onChange={handleChange}
-                  className="w-24 px-2 py-1 bg-gray-800/50 border border-gray-700 rounded text-white text-right focus:outline-none focus:ring-1 focus:ring-blue-500/50"
+                  className="w-20 sm:w-24 px-2 py-1 bg-gray-800/50 border border-gray-700 rounded text-white text-right focus:outline-none focus:ring-1 focus:ring-blue-500/50 text-sm"
                 />
               </div>
               <hr className="border-gray-700" />
-              <div className="flex justify-between text-white font-semibold text-lg">
+              <div className="flex justify-between text-white font-semibold text-base sm:text-lg">
                 <span>Total:</span>
                 <span>${Number(formData.total).toFixed(2)}</span>
               </div>
@@ -482,14 +483,14 @@ useEffect(() => {
           </div>
 
           {/* Status and Additional Info */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Order Status</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Order Status</label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
                 disabled={!(canEditAll || canEditQuantityOnly)}
 
               >
@@ -500,13 +501,13 @@ useEffect(() => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Payment Status</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Payment Status</label>
               <select
                 name="paymentStatus"
                 value={formData.paymentStatus}
                 onChange={handleChange}
                 disabled={!canEditAll && !!order}
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
               >
                 {paymentStatuses.map(status => (
                   <option key={status} value={status}>{status.toUpperCase()}</option>
@@ -515,7 +516,7 @@ useEffect(() => {
             </div>
             {isCungUng &&(
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Estimated Delivery</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Estimated Delivery</label>
               <input
                 type="date"
                 name="estimatedDelivery"
@@ -523,7 +524,7 @@ useEffect(() => {
                 min={formData.orderDate}
                 onChange={handleChange}
                 disabled={!canSelectDeliveryDate}
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
               />
             </div>
             )}
@@ -531,13 +532,13 @@ useEffect(() => {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Order Notes</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Order Notes</label>
             <textarea
               name="notes"
               value={formData.notes}
               onChange={handleChange}
               rows={3}
-              className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
+              className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none text-sm sm:text-base"
               disabled={!(canEditAll || canEditQuantityOnly)} 
 
               placeholder="Enter any special instructions or notes"
@@ -545,17 +546,17 @@ useEffect(() => {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end space-x-4 pt-4 border-t border-gray-700/50">
+          <div className="flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4 pt-4 border-t border-gray-700/50">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-gray-400 hover:text-white transition-colors"
+              className="w-full sm:w-auto px-4 sm:px-6 py-2 text-gray-400 hover:text-white transition-colors text-sm sm:text-base"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300"
+              className="w-full sm:w-auto px-4 sm:px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 text-sm sm:text-base"
             >
               {order ? 'Update Order' : 'Create Order'}
             </button>

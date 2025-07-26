@@ -588,27 +588,28 @@ useEffect(() => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Order Management</h1>
-          <p className="text-gray-400">Track and manage customer orders</p>
+          <h1 className="text-xl sm:text-3xl font-bold text-white mb-2">Order Management</h1>
+          <p className="text-gray-400 text-sm sm:text-base">Track and manage customer orders</p>
         </div>
         <button
           onClick={handleAddOrder}
-          className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+          className="flex items-center space-x-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
         >
           <Plus className="h-5 w-5" />
-          <span>Create Order</span>
+          <span className="hidden sm:inline">Create Order</span>
+          <span className="sm:hidden">Create</span>
         </button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Total Orders</p>
-              <p className="text-white text-2xl font-bold">{totalOrders}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Total Orders</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">{totalOrders}</p>
             </div>
-            <Package className="h-8 w-8 text-blue-400" />
+            <Package className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
           </div>
         </div>
         
@@ -616,37 +617,37 @@ useEffect(() => {
           <div className="flex items-center justify-between">
             <div>
               
-              <p className="text-gray-400 text-sm">{pendingLabel}</p>
-              <p className="text-white text-2xl font-bold">{pendingOrders}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">{pendingLabel}</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">{pendingOrders}</p>
             </div>
-            <Clock className="h-8 w-8 text-yellow-400" />
+            <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400" />
           </div>
         </div>
         
         <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">{processingLabel}</p>
-              <p className="text-white text-2xl font-bold">{processingOrders}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">{processingLabel}</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">{processingOrders}</p>
             </div>
-            <AlertCircle className="h-8 w-8 text-blue-400" />
+            <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
           </div>
         </div>
         
         <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Total Revenue</p>
-              <p className="text-white text-2xl font-bold">${totalRevenue.toLocaleString()}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Total Revenue</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">${totalRevenue.toLocaleString()}</p>
             </div>
-            <CheckCircle className="h-8 w-8 text-green-400" />
+            <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-400" />
           </div>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-4">
+      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
+        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
           {/* Search */}
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -654,7 +655,7 @@ useEffect(() => {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search orders..."
+              placeholder="Search..."
               className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
             />
           </div>
@@ -662,13 +663,14 @@ useEffect(() => {
           <div className='flex items-center space-x-4'>
             <button
               onClick={handleMergeOrders}
-            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+            className="flex items-center space-x-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
             >
-              Gộp {selectedOrders.length} đơn đã chọn
+              <span className="hidden sm:inline">Gộp {selectedOrders.length} đơn đã chọn</span>
+              <span className="sm:hidden">Merge ({selectedOrders.length})</span>
             </button>
             <button
               onClick={handleExportOrders}
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+              className="flex items-center space-x-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
             >
               Export
             </button>
@@ -679,7 +681,7 @@ useEffect(() => {
 
 
           {/* Filters */}
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
               <input
               type="file"
               ref={fileInputRef}
@@ -690,14 +692,14 @@ useEffect(() => {
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+              className="flex items-center space-x-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
             >
               Import
             </button>
             <select
               value={selectedStatus}
               onChange={e => setSelectedStatus(e.target.value)}
-              className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
             >
               {statuses.map(status => (
                 <option key={status} value={status}>
@@ -709,7 +711,7 @@ useEffect(() => {
             <select
               value={selectedPaymentStatus}
               onChange={(e) => setSelectedPaymentStatus(e.target.value)}
-              className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
             >
               {paymentStatuses.map(status => (
                 <option key={status} value={status}>
@@ -728,25 +730,26 @@ useEffect(() => {
       {/* Orders Table */}
       {mode === 'normal' && (
       
-      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl overflow-hidden">
+      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl overflow-hidden overflow-x-auto">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[800px]">
             <thead className="bg-gray-800/50 border-b border-gray-700/50">
               <tr>
-                <th className="text-left p-4 text-gray-300 font-medium">Order</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Supplier</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Items</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Total</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Status</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Payment</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Date</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Actions</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Order</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Supplier</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Items</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Total</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Status</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Payment</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Date</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredOrders.map((order) => (
                 <tr key={order.id} className="border-b border-gray-700/30 hover:bg-gray-800/30 transition-colors">
-                  <td className="p-4 flex items-center gap-2">
+                  <td className="p-2 sm:p-4">
+                    <div className="flex items-center gap-2">
            
                     {order.status === 'fulfilled' && 
                     order.paymentStatus === 'paid'   &&
@@ -760,39 +763,40 @@ useEffect(() => {
                       />
                     )}
                     <div>
-                      <p className="text-white font-medium">{order.orderNumber}</p>
-                      <p className="text-gray-400 text-sm">ID: {order.id}</p>
+                      <p className="text-white font-medium text-xs sm:text-sm">{order.orderNumber}</p>
+                      <p className="text-gray-400 text-xs">ID: {order.id}</p>
+                    </div>
                     </div>
                   </td>
 
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     <div>
-                      <p className="text-white">{order.supplier_name}</p>
+                      <p className="text-white text-xs sm:text-sm">{order.supplier_name}</p>
                     </div>
                   </td>
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     <div>
-                      <p className="text-white">{order.items.length} item(s)</p>
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-white text-xs sm:text-sm">{order.items.length} item(s)</p>
+                      <p className="text-gray-400 text-xs">
                         {order.items[0]?.productName}
                         {order.items.length > 1 && ` +${order.items.length - 1} more`}
                       </p>
                     </div>
                   </td>
-                  <td className="p-4 text-white font-semibold">${order.total.toFixed(2)}</td>
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4 text-white font-semibold text-xs sm:text-sm">${order.total.toFixed(2)}</td>
+                  <td className="p-2 sm:p-4">
                     <div className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium border w-fit ${getStatusColor(order.status)}`}>
                       {getStatusIcon(order.status)}
                       <span>{order.status.toUpperCase()}</span>
                     </div>
                   </td>
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getPaymentStatusColor(order.paymentStatus)}`}>
                       {order.paymentStatus.toUpperCase()}
                     </span>
                   </td>
-                  <td className="p-4 text-gray-300">{order.orderDate ? new Date(order.orderDate).toLocaleDateString('vi-VN'):''}</td>
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4 text-gray-300 text-xs sm:text-sm">{order.orderDate ? new Date(order.orderDate).toLocaleDateString('vi-VN'):''}</td>
+                  <td className="p-2 sm:p-4">
                     <div className="flex items-center space-x-2">
                      {canEditOrder(order) && ( 
                       <button
@@ -829,7 +833,7 @@ useEffect(() => {
 
         {filteredOrders.length === 0 && (
           <div className="text-center py-12">
-            <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <Package className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-400">No orders found matching your criteria</p>
           </div>
         )}
@@ -872,27 +876,29 @@ useEffect(() => {
       {selectedMonths.length > 0 && (
           <button
             onClick={handleExportSelectedMonths}
-            className="mb-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+            className="mb-4 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
           >
-            Xuất {selectedMonths.length} tháng đã chọn
+            <span className="hidden sm:inline">Xuất {selectedMonths.length} tháng đã chọn</span>
+            <span className="sm:hidden">Export ({selectedMonths.length})</span>
           </button>
         )}
 
       {selectedYears.length > 0 && (
           <button
             onClick={handleExportSelectedYears}
-            className="mb-4 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+            className="mb-4 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
           >
-            Xuất {selectedYears.length} năm đã chọn
+            <span className="hidden sm:inline">Xuất {selectedYears.length} năm đã chọn</span>
+            <span className="sm:hidden">Export ({selectedYears.length})</span>
           </button>
         )}
 
       {mode === 'monthly'  &&(
           <div className="mt-6 space-y-6">
             {monthlyOrders.map((group: any) => (
-              <div key={group.month} className="bg-gray-800/40 rounded-xl p-4 border border-gray-600/30">
+              <div key={group.month} className="bg-gray-800/40 rounded-xl p-3 sm:p-4 border border-gray-600/30">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-white text-lg font-semibold">Tháng {group.month}</h2>
+                  <h2 className="text-white text-base sm:text-lg font-semibold">Tháng {group.month}</h2>
                   <input
                     type="checkbox"
                     checked={selectedMonths.includes(group.month)}
@@ -900,26 +906,28 @@ useEffect(() => {
                     className="form-checkbox text-green-500 h-5 w-5"
                   />
                 </div>
-                <table className="w-full text-left">
+                <div className="overflow-x-auto">
+                <table className="w-full text-left min-w-[500px]">
                   <thead>
                     <tr>
-                      <th className="p-2 text-gray-300">Sản phẩm</th>
-                      <th className="p-2 text-gray-300">Tổng số lượng</th>
-                      <th className="p-2 text-gray-300">Giá</th>
-                      <th className="p-2 text-gray-300">Thành tiền</th>
+                      <th className="p-2 text-gray-300 text-xs sm:text-sm">Sản phẩm</th>
+                      <th className="p-2 text-gray-300 text-xs sm:text-sm">Tổng số lượng</th>
+                      <th className="p-2 text-gray-300 text-xs sm:text-sm">Giá</th>
+                      <th className="p-2 text-gray-300 text-xs sm:text-sm">Thành tiền</th>
                     </tr>
                   </thead>
                   <tbody>
                     {group.items.map((item: any) => (
                       <tr key={item.product_id} className="border-t border-gray-700/40">
-                        <td className="p-2 text-white">{item.product_name}</td>
-                        <td className="p-2 text-white">{item.total_quantity}</td>
-                        <td className="p-2 text-white">${item.price}</td>
-                        <td className="p-2 text-white">${(item.price * item.total_quantity).toFixed(2)}</td>
+                        <td className="p-2 text-white text-xs sm:text-sm">{item.product_name}</td>
+                        <td className="p-2 text-white text-xs sm:text-sm">{item.total_quantity}</td>
+                        <td className="p-2 text-white text-xs sm:text-sm">${item.price}</td>
+                        <td className="p-2 text-white text-xs sm:text-sm">${(item.price * item.total_quantity).toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             ))}
 
@@ -929,11 +937,11 @@ useEffect(() => {
       {mode === 'yearly' && (
           <div className="mt-6 space-y-6">
             {yearlyOrders.map((group: any) => (
-              <div key={group.year} className="bg-gray-800/40 rounded-xl p-6 border border-gray-600/30">
+              <div key={group.year} className="bg-gray-800/40 rounded-xl p-3 sm:p-6 border border-gray-600/30">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-4">
-                    <h2 className="text-white text-xl font-bold">Năm {group.year}</h2>
-                    <span className="text-green-400 font-semibold">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+                    <h2 className="text-white text-lg sm:text-xl font-bold">Năm {group.year}</h2>
+                    <span className="text-green-400 font-semibold text-sm sm:text-base">
                       Tổng doanh thu: ${group.total_revenue?.toLocaleString() || 0}
                     </span>
                   </div>
@@ -947,26 +955,26 @@ useEffect(() => {
 
                 {/* Yearly Summary */}
                 <div className="mb-6">
-                  <h3 className="text-white text-lg font-semibold mb-3">Tổng kết năm</h3>
+                  <h3 className="text-white text-base sm:text-lg font-semibold mb-3">Tổng kết năm</h3>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left bg-gray-900/50 rounded-lg">
+                    <table className="w-full text-left bg-gray-900/50 rounded-lg min-w-[600px]">
                       <thead>
                         <tr className="border-b border-gray-700/50">
-                          <th className="p-3 text-gray-300">Mã SP</th>
-                          <th className="p-3 text-gray-300">Tên sản phẩm</th>
-                          <th className="p-3 text-gray-300">Tổng số lượng</th>
-                          <th className="p-3 text-gray-300">Giá</th>
-                          <th className="p-3 text-gray-300">Thành tiền</th>
+                          <th className="p-2 sm:p-3 text-gray-300 text-xs sm:text-sm">Mã SP</th>
+                          <th className="p-2 sm:p-3 text-gray-300 text-xs sm:text-sm">Tên sản phẩm</th>
+                          <th className="p-2 sm:p-3 text-gray-300 text-xs sm:text-sm">Tổng số lượng</th>
+                          <th className="p-2 sm:p-3 text-gray-300 text-xs sm:text-sm">Giá</th>
+                          <th className="p-2 sm:p-3 text-gray-300 text-xs sm:text-sm">Thành tiền</th>
                         </tr>
                       </thead>
                       <tbody>
                         {group.total_items?.map((item: any) => (
                           <tr key={item.product_id} className="border-t border-gray-700/40">
-                            <td className="p-3 text-white font-mono">{item.product_code}</td>
-                            <td className="p-3 text-white">{item.product_name}</td>
-                            <td className="p-3 text-white font-semibold">{item.total_quantity}</td>
-                            <td className="p-3 text-white">${item.price}</td>
-                            <td className="p-3 text-green-400 font-semibold">
+                            <td className="p-2 sm:p-3 text-white font-mono text-xs sm:text-sm">{item.product_code}</td>
+                            <td className="p-2 sm:p-3 text-white text-xs sm:text-sm">{item.product_name}</td>
+                            <td className="p-2 sm:p-3 text-white font-semibold text-xs sm:text-sm">{item.total_quantity}</td>
+                            <td className="p-2 sm:p-3 text-white text-xs sm:text-sm">${item.price}</td>
+                            <td className="p-2 sm:p-3 text-green-400 font-semibold text-xs sm:text-sm">
                               ${(item.price * item.total_quantity).toFixed(2)}
                             </td>
                           </tr>
@@ -978,18 +986,18 @@ useEffect(() => {
 
                 {/* Monthly Breakdown */}
                 <div>
-                  <h3 className="text-white text-lg font-semibold mb-3">Chi tiết theo tháng</h3>
+                  <h3 className="text-white text-base sm:text-lg font-semibold mb-3">Chi tiết theo tháng</h3>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {group.monthly_breakdown?.map((monthData: any) => (
-                      <div key={monthData.month} className="bg-gray-900/30 rounded-lg p-4">
-                        <h4 className="text-blue-400 font-semibold mb-2">
+                      <div key={monthData.month} className="bg-gray-900/30 rounded-lg p-3 sm:p-4">
+                        <h4 className="text-blue-400 font-semibold mb-2 text-sm sm:text-base">
                           {monthData.month_name} {group.year}
                         </h4>
                         <div className="space-y-2">
                           {monthData.items?.slice(0, 3).map((item: any) => (
-                            <div key={item.product_id} className="flex justify-between text-sm">
-                              <span className="text-gray-300 truncate">{item.product_name}</span>
-                              <span className="text-white font-medium">{item.total_quantity} units</span>
+                            <div key={item.product_id} className="flex justify-between text-xs sm:text-sm">
+                              <span className="text-gray-300 truncate flex-1 mr-2">{item.product_name}</span>
+                              <span className="text-white font-medium whitespace-nowrap">{item.total_quantity} units</span>
                             </div>
                           ))}
                           {monthData.items?.length > 3 && (

@@ -400,64 +400,65 @@ useEffect(() => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Product Management</h1>
-          <p className="text-gray-400">Manage your product inventory and catalog</p>
+          <h1 className="text-xl sm:text-3xl font-bold text-white mb-2">Product Management</h1>
+          <p className="text-gray-400 text-sm sm:text-base">Manage your product inventory and catalog</p>
         </div>
         <button
           onClick={handleAddProduct}
-          className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+          className="flex items-center space-x-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
         >
           <Plus className="h-5 w-5" />
-          <span>Add Product</span>
+          <span className="hidden sm:inline">Add Product</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Total Products</p>
-              <p className="text-white text-2xl font-bold">{totalProducts}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Total Products</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">{totalProducts}</p>
             </div>
-            <Package className="h-8 w-8 text-blue-400" />
+            <Package className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400" />
           </div>
         </div>
         
-        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Active Products</p>
-              <p className="text-white text-2xl font-bold">{activeProducts}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Active Products</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">{activeProducts}</p>
             </div>
-            <TrendingUp className="h-8 w-8 text-green-400" />
+            <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-400" />
           </div>
         </div>
         
-        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Low Stock</p>
-              <p className="text-white text-2xl font-bold">{lowStockProducts}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Low Stock</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">{lowStockProducts}</p>
             </div>
-            <AlertTriangle className="h-8 w-8 text-yellow-400" />
+            <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-400" />
           </div>
         </div>
         
-        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-400 text-sm">Out of Stock</p>
-              <p className="text-white text-2xl font-bold">{outOfStockProducts}</p>
+              <p className="text-gray-400 text-xs sm:text-sm">Out of Stock</p>
+              <p className="text-white text-lg sm:text-2xl font-bold">{outOfStockProducts}</p>
             </div>
-            <Package className="h-8 w-8 text-red-400" />
+            <Package className="h-6 w-6 sm:h-8 sm:w-8 text-red-400" />
           </div>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-4">
+      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-3 sm:p-6">
+        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
           {/* Search */}
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -468,17 +469,17 @@ useEffect(() => {
                   setSearchTerm(e.target.value);
                   setPage(1); // reset trang về đầu khi người dùng gõ mới
                 }}
-              placeholder="Search products..."
+              placeholder="Search..."
               className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
             />
           </div>
 
           {/* Filters */}
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
             >
               {categories.map(category => (
                 <option key={category.id} value={category.name}>
@@ -490,7 +491,7 @@ useEffect(() => {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
             >
               {statuses.map(status => (
                 <option key={status} value={status}>
@@ -499,7 +500,7 @@ useEffect(() => {
               ))}
             </select>
 
-            <div className="flex items-center space-x-2 bg-gray-800/50 border border-gray-700 rounded-xl p-1">
+            <div className="hidden sm:flex items-center space-x-2 bg-gray-800/50 border border-gray-700 rounded-xl p-1">
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-lg transition-colors ${
@@ -522,20 +523,20 @@ useEffect(() => {
       </div>
 
       {/* Products Table */}
-      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl overflow-hidden">
+      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl overflow-hidden overflow-x-auto">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[900px]">
             <thead className="bg-gray-800/50 border-b border-gray-700/50">
               <tr>
-                <th className="text-left p-4 text-gray-300 font-medium">Product</th>
-                <th className="text-left p-4 text-gray-300 font-medium">SKU</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Category</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Price</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Stock</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Status</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Color</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Barcode</th>
-                <th className="text-left p-4 text-gray-300 font-medium">Actions</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Product</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">SKU</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Category</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Price</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Stock</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Status</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Color</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Barcode</th>
+                <th className="text-left p-2 sm:p-4 text-gray-300 font-medium text-xs sm:text-sm">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -549,36 +550,36 @@ useEffect(() => {
                     }`}
                   >
 
-                    <td className="p-4">
+                    <td className="p-2 sm:p-4">
                       <div className="flex items-center space-x-3">
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-12 h-12 rounded-lg object-cover"
+                          className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg object-cover"
                         />
                         <div>
-                          <p className="text-white font-medium">{product.name}</p>
-                          <p className="text-gray-400 text-sm">{product.description.substring(0, 40)}...</p>
+                          <p className="text-white font-medium text-xs sm:text-sm">{product.name}</p>
+                          <p className="text-gray-400 text-xs hidden sm:block">{product.description.substring(0, 40)}...</p>
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 text-gray-300">{product.sku}</td>
-                    <td className="p-4 text-gray-300">{product.category}</td>
-                    <td className="p-4 text-white font-semibold">${product.price}</td>
-                    <td className="p-4">
+                    <td className="p-2 sm:p-4 text-gray-300 text-xs sm:text-sm">{product.sku}</td>
+                    <td className="p-2 sm:p-4 text-gray-300 text-xs sm:text-sm">{product.category}</td>
+                    <td className="p-2 sm:p-4 text-white font-semibold text-xs sm:text-sm">${product.price}</td>
+                    <td className="p-2 sm:p-4">
                       <span className={`${stockStatus.color} font-medium`}>
-                        {product.stock} units
+                        <span className="text-xs sm:text-sm">{product.stock} units</span>
                       </span>
                     </td>
-                    <td className="p-4 whitespace-nowrap overflow-visible">
+                    <td className="p-2 sm:p-4 whitespace-nowrap overflow-visible">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(product.status)}`}>
                         {product.status.replace('_', ' ').toUpperCase()}
                       </span>
                     </td>
-                    <td className="p-4 text-gray-300">{product.color}</td>
-                    <td className="p-4 text-gray-300">{product.barcode}</td>
+                    <td className="p-2 sm:p-4 text-gray-300 text-xs sm:text-sm">{product.color}</td>
+                    <td className="p-2 sm:p-4 text-gray-300 text-xs sm:text-sm">{product.barcode}</td>
 
-                    <td className="p-4">
+                    <td className="p-2 sm:p-4">
                       <div className="flex items-center space-x-2">
                         {['active', 'out_of_stock'].includes(product.status) && (
                           <>
@@ -618,7 +619,7 @@ useEffect(() => {
 
         {filteredProducts.length === 0 && (
           <div className="text-center py-12">
-            <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <Package className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-400">No products found matching your criteria</p>
           </div>
         )}
@@ -654,7 +655,7 @@ useEffect(() => {
         </div>
         
       )}
-      <p className="text-center text-gray-400 text-sm py-2">
+      <p className="text-center text-gray-400 text-xs sm:text-sm py-2">
         Hiển thị {pagination.per_page} / Tổng {pagination.total} sản phẩm
       </p>
 

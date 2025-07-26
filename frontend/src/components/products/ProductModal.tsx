@@ -119,10 +119,10 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
-          <h2 className="text-2xl font-bold text-white">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-700/50">
+          <h2 className="text-lg sm:text-2xl font-bold text-white">
             {product ? 'Edit Product' : 'Add New Product'}
           </h2>
           <button
@@ -134,10 +134,10 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           {/* Product Image */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">
               Product Image
             </label>
 
@@ -146,7 +146,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               <img
                 src={imageFile ? URL.createObjectURL(imageFile) : formData.image}
                 alt="Product preview"
-                className="w-20 h-20 rounded-lg object-cover border border-gray-700"
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover border border-gray-700"
               />
 
               {/* ---- URL + ChooseFile trong cùng 1 khung bo tròn ---- */}
@@ -158,8 +158,8 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   value={formData.image}
                   onChange={handleChange}
                   placeholder="Enter image URL"
-                  className="flex-1 px-4 py-2 bg-gray-800/50 text-white placeholder-gray-400
-                            focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  className="flex-1 px-3 sm:px-4 py-2 bg-gray-800/50 text-white placeholder-gray-400
+                            focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm sm:text-base"
                 />
 
                 {/* input file ẩn */}
@@ -174,17 +174,18 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                 {/* nút label đẹp */}
                 <label
                   htmlFor="imageFileInput"
-                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600
+                  className="px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600
                             hover:from-blue-700 hover:to-cyan-700 text-white text-sm
                             cursor-pointer select-none transition-all duration-200
                             flex items-center justify-center"
                 >
-                  Choose File
+                  <span className="hidden sm:inline">Choose File</span>
+                  <span className="sm:hidden">Choose</span>
                 </label>
               </div>
             </div>
 
-            <p className="text-gray-400 text-xs mt-1">
+            <p className="text-gray-400 text-xs sm:text-sm mt-1">
               Enter a valid image URL or choose a file
             </p>
           </div>
@@ -193,23 +194,23 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
           {/* Product Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Product Name</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Product Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+              className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
               placeholder="Enter product name"
             />
           </div>
 
           {/* Min Stock and Category and Barcode */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
            
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Min Stock</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Min Stock</label>
             <input
               type="number"
               name="min_stock"
@@ -217,19 +218,19 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               onChange={handleChange}
               min="0"
               required
-              className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+              className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
               placeholder="0"
           />
           </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Category</label>
               <select
                 name="category_id"
                 value={formData.category_id}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
               >
                 {categories.map(category => (
                   <option key={category.id} value={category.id}>
@@ -239,13 +240,13 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Barcode</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Barcode</label>
               <input
                 type="text"
                 name="barcode"
                 value={formData.barcode}
                 onChange={handleChange}
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
                 placeholder="Enter product barcode"
               />
             </div>
@@ -253,9 +254,9 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           </div>
 
           {/* Price and Stock */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Price ($)</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Price ($)</label>
               <input
                 type="number"
                 name="price"
@@ -263,12 +264,12 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                 onChange={handleChange}
                 min="0"
                 required
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
                 placeholder="0"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Stock Quantity</label>
+              <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Stock Quantity</label>
               <input
                 type="number"
                 name="stock"
@@ -276,18 +277,18 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                 onChange={handleChange}
                 min="0"
                 required
-                className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
                 placeholder="0"
               />
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Color</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Color</label>
                 <input
                   type="text"
                   name="color"
                   value={formData.color}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
                   placeholder="Color"
                 />
               </div>
@@ -298,12 +299,12 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           {/* Status */}
           {isManager && (
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Status</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Status</label>
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+              className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm sm:text-base"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
@@ -312,29 +313,29 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           )}
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+            <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-2">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
               rows={4}
-              className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 resize-none"
+              className="w-full px-3 sm:px-4 py-2 bg-gray-800/50 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 resize-none text-sm sm:text-base"
               placeholder="Enter product description"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end space-x-4 pt-4 border-t border-gray-700/50">
+          <div className="flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4 pt-4 border-t border-gray-700/50">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-gray-400 hover:text-white transition-colors"
+              className="w-full sm:w-auto px-4 sm:px-6 py-2 text-gray-400 hover:text-white transition-colors text-sm sm:text-base"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300"
+              className="w-full sm:w-auto px-4 sm:px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium rounded-xl transition-all duration-300 text-sm sm:text-base"
             >
               {product ? 'Update Product' : 'Create Product'}
             </button>
