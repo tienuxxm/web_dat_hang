@@ -920,6 +920,87 @@ useEffect(() => {
           </div>
         )}
 
+      {mode === 'yearly' && (
+          <div className="mt-6 space-y-6">
+            {yearlyOrders.map((group: any) => (
+              <div key={group.year} className="bg-gray-800/40 rounded-xl p-6 border border-gray-600/30">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <h2 className="text-white text-xl font-bold">Năm {group.year}</h2>
+                    <span className="text-green-400 font-semibold">
+                      Tổng doanh thu: ${group.total_revenue?.toLocaleString() || 0}
+                    </span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={selectedYears.includes(group.year)}
+                    onChange={() => toggleYearSelection(group.year)}
+                    className="form-checkbox text-green-500 h-5 w-5"
+                  />
+                </div>
+
+                {/* Yearly Summary */}
+                <div className="mb-6">
+                  <h3 className="text-white text-lg font-semibold mb-3">Tổng kết năm</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left bg-gray-900/50 rounded-lg">
+                      <thead>
+                        <tr className="border-b border-gray-700/50">
+                          <th className="p-3 text-gray-300">Mã SP</th>
+                          <th className="p-3 text-gray-300">Tên sản phẩm</th>
+                          <th className="p-3 text-gray-300">Tổng số lượng</th>
+                          <th className="p-3 text-gray-300">Giá</th>
+                          <th className="p-3 text-gray-300">Thành tiền</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.total_items?.map((item: any) => (
+                          <tr key={item.product_id} className="border-t border-gray-700/40">
+                            <td className="p-3 text-white font-mono">{item.product_code}</td>
+                            <td className="p-3 text-white">{item.product_name}</td>
+                            <td className="p-3 text-white font-semibold">{item.total_quantity}</td>
+                            <td className="p-3 text-white">${item.price}</td>
+                            <td className="p-3 text-green-400 font-semibold">
+                              ${(item.price * item.total_quantity).toFixed(2)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Monthly Breakdown */}
+                <div>
+                  <h3 className="text-white text-lg font-semibold mb-3">Chi tiết theo tháng</h3>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {group.monthly_breakdown?.map((monthData: any) => (
+                      <div key={monthData.month} className="bg-gray-900/30 rounded-lg p-4">
+                        <h4 className="text-blue-400 font-semibold mb-2">
+                          {monthData.month_name} {group.year}
+                        </h4>
+                        <div className="space-y-2">
+                          {monthData.items?.slice(0, 3).map((item: any) => (
+                            <div key={item.product_id} className="flex justify-between text-sm">
+                              <span className="text-gray-300 truncate">{item.product_name}</span>
+                              <span className="text-white font-medium">{item.total_quantity} units</span>
+                            </div>
+                          ))}
+                          {monthData.items?.length > 3 && (
+                            <div className="text-gray-400 text-xs">
+                              +{monthData.items.length - 3} sản phẩm khác
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
       {/* Order Modal */}
       {showModal && (
         <OrderModal
