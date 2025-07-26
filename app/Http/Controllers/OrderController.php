@@ -605,6 +605,81 @@ class OrderController extends Controller
 
         return response()->json($result);
     }
+
+    public function mergedByYear()
+    {
+        $orders = Order::with('items.product')
+            ->where('status', 'fulfilled')
+            ->where('payment_status', 'paid')
+            ->where('merged', true)
+            ->get();
+
+        $grouped = $orders->groupBy(function ($order) {
+            return Carbon::parse($order->order_date)->format('Y');
+        });
+
+        $result = [];
+
+        foreach ($grouped as $year => $ordersInYear) {
+            $items = [];
+            $monthlyBreakdown = [];
+
+            // Group by month within the year for detailed breakdown
+            $monthlyGroups = $ordersInYear->groupBy(function ($order) {
+                return Carbon::parse($order->order_date)->format('m');
+            });
+
+            foreach ($monthlyGroups as $month => $ordersInMonth) {
+                $monthItems = [];
+                foreach ($ordersInMonth as $order) {
+                    foreach ($order->items as $item) {
+                        $key = $item->product_id;
+
+                        // Add to yearly total
+                        if (!isset($items[$key])) {
+                            $items[$key] = [
+                                'product_id' => $item->product_id,
+                                'product_name' => $item->product_name,
+                                'product_code' => $item->product->code ?? '',
+                                'price' => $item->unit_price,
+                                'total_quantity' => 0
+                            ];
+                        }
+                        $items[$key]['total_quantity'] += $item->quantity;
+
+                        // Add to monthly breakdown
+                        if (!isset($monthItems[$key])) {
+                            $monthItems[$key] = [
+                                'product_id' => $item->product_id,
+                                'product_name' => $item->product_name,
+                                'product_code' => $item->product->code ?? '',
+                                'price' => $item->unit_price,
+                                'total_quantity' => 0
+                            ];
+                        }
+                        $monthItems[$key]['total_quantity'] += $item->quantity;
+                    }
+                }
+
+                $monthlyBreakdown[] = [
+                    'month' => sprintf('%02d/%s', $month, $year),
+                    'month_name' => Carbon::createFromFormat('m', $month)->format('F'),
+                    'items' => array_values($monthItems)
+                ];
+            }
+
+            $result[] = [
+                'year' => $year,
+                'total_items' => array_values($items),
+                'monthly_breakdown' => $monthlyBreakdown,
+                'total_revenue' => array_sum(array_map(function($item) {
+                    return $item['price'] * $item['total_quantity'];
+                }, $items))
+            ];
+        }
+
+        return response()->json($result);
+    }
     public function search(Request $request)
     {
         $q = $request->query('q', '');

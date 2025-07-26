@@ -11,7 +11,7 @@ import CategoriesPage from '../components/categories/CategoriesPage';
 import { Toaster } from 'react-hot-toast';
 
 
-export type Pagetype =  'dashboard' | 'orders' | 'customers' | 'products' | 'reports' | 'settings'|'ordersMonthly'|'productsCategories';
+export type Pagetype =  'dashboard' | 'orders' | 'customers' | 'products' | 'reports' | 'settings'|'ordersMonthly'|'ordersYearly'|'productsCategories';
 
 export default function DashboardLayout() {
   const storedUser = localStorage.getItem('user');
@@ -30,6 +30,8 @@ export default function DashboardLayout() {
         return <OrdersPage mode ="normal"/>;
       case 'ordersMonthly':
         return <OrdersPage mode="monthly" />;
+      case 'ordersYearly':
+        return <OrdersPage mode="yearly" />;
       case 'productsCategories':
         return <CategoriesPage />;  
       default:

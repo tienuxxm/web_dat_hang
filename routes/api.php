@@ -46,6 +46,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('orders')->controller(OrderController::class)->group(function () {
     Route::get('search', 'search');
     Route::get('merged-by-month', 'mergedByMonth'); // Đưa trước
+    Route::get('merged-by-year', 'mergedByYear');   // Thêm route cho yearly
     Route::patch('merge',         'combine');       // Đưa trước
     Route::get('/',        'index');   
     Route::post('/',       'store');
@@ -55,6 +56,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post ('import-multiple','importMultipleOrders');
 });
     Route::post('/export-merged-orders-multi-months', [ExportController::class, 'exportMergedOrdersMultipleMonths']);
+    Route::post('/export-merged-orders-multi-years', [ExportController::class, 'exportMergedOrdersMultipleYears']);
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/mark-read', [NotificationController::class, 'markRead']);
     Route::post('/export-order', [ExportController::class, 'exportOrder']);

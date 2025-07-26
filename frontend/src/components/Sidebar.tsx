@@ -63,6 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, userRole, userDepartment,c
       children: [
         { id: 'orders-all', label: 'All Orders', icon: <FileText className="h-4 w-4" />, page: 'orders' },
         { id: 'orders-monthly', label: 'Monthly Orders', icon: <FileText className="h-4 w-4" />, page: 'ordersMonthly' },
+        { id: 'orders-yearly', label: 'Yearly Orders', icon: <FileText className="h-4 w-4" />, page: 'ordersYearly' },
         { id: 'orders-completed', label: 'Completed', icon: <FileText className="h-4 w-4" />, page: 'orders',roles: [] },
         { id: 'orders-cancelled', label: 'Cancelled', icon: <FileText className="h-4 w-4" />, page: 'orders',roles: [] },
       ]

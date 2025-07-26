@@ -42,7 +42,7 @@ interface Order {
 }
 
 interface OrdersPageProps {
-  mode: 'normal' | 'monthly';
+  mode: 'normal' | 'monthly' | 'yearly';
 }
 
 
@@ -60,6 +60,7 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ mode }) => {
   const [search, setSearch]     = useState(initialSearch || '');
   const [totalOrders, setTotalOrders] = useState(0);
   const [monthlyOrders, setMonthlyOrders] = useState<any[]>([]);
+  const [yearlyOrders, setYearlyOrders] = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState(getCurrentUser());
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -411,6 +412,7 @@ const handleImportOrders = async (e: React.ChangeEvent<HTMLInputElement>) => {
 // Gợi ý: thêm input file ẩn ở cuối render
 
 const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
+const [selectedYears, setSelectedYears] = useState<string[]>([]);
 
 
 useEffect(() => {
@@ -428,16 +430,28 @@ const fetchMonthlyOrders = async () => {
       }
     };
 
+const fetchYearlyOrders = async () => {
+      try {
+        const res = await api.get('/orders/merged-by-year');
+        setYearlyOrders(res.data); // [{ year: '2024', total_items: [...], monthly_breakdown: [...] }]
+      } catch (error) {
+        console.error('❌ Lỗi khi fetch đơn gộp theo năm:', error);
+      }
+    };
 useEffect(() => {
       setOrders([]);
       setMonthlyOrders([]);
+      setYearlyOrders([]);
       setSelectedOrders([]);
       setSelectedMonths([]);
+      setSelectedYears([]);
 
       if (mode === 'normal') {
         fetchOrders(search);
       } else if (mode === 'monthly') {
         fetchMonthlyOrders();
+      } else if (mode === 'yearly') {
+        fetchYearlyOrders();
       }
     }, [mode, page, currentUser,search]);
 
@@ -446,6 +460,14 @@ const toggleMonthSelection = (month: string) => {
     prev.includes(month)
       ? prev.filter(m => m !== month)
       : [...prev, month]
+  );
+};
+
+const toggleYearSelection = (year: string) => {
+  setSelectedYears(prev =>
+    prev.includes(year)
+      ? prev.filter(y => y !== year)
+      : [...prev, year]
   );
 };
 const handleExportSelectedMonths = async () => {
@@ -460,6 +482,27 @@ const handleExportSelectedMonths = async () => {
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', 'don-gop-theo-thang.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (err: any) {
+    console.error(err);
+    toast.error(err.response?.data?.message || 'Xuất thất bại');
+  }
+};
+
+const handleExportSelectedYears = async () => {
+  try {
+    const response = await api.post(
+      '/export-merged-orders-multi-years',
+      { years: selectedYears },
+      { responseType: 'blob' }
+    );
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'don-gop-theo-nam.xlsx');
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -829,6 +872,14 @@ useEffect(() => {
           </button>
         )}
 
+      {selectedYears.length > 0 && (
+          <button
+            onClick={handleExportSelectedYears}
+            className="mb-4 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105"
+          >
+            Xuất {selectedYears.length} năm đã chọn
+          </button>
+        )}
 
       {mode === 'monthly'  &&(
           <div className="mt-6 space-y-6">
