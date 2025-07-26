@@ -65,7 +65,7 @@ interface OrderModalProps {
   onSave: (order: OrderPayload) => void|Promise<void>;
   onClose: () => void;
   currentUser: any; // Hoặc User type nếu bạn đã có
-  readOnly={readOnlyMode}
+  readOnly?:boolean;
 
 }
 
