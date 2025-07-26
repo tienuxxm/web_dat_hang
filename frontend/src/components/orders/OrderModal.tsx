@@ -65,10 +65,11 @@ interface OrderModalProps {
   onSave: (order: OrderPayload) => void|Promise<void>;
   onClose: () => void;
   currentUser: any; // Hoặc User type nếu bạn đã có
+  readOnly={readOnlyMode}
 
 }
 
-const OrderModal: React.FC<OrderModalProps> = ({ order, onSave, onClose }) => {
+const OrderModal: React.FC<OrderModalProps> = ({ order, onSave, onClose ,readOnly= false}) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [currentUser, setCurrentUser] = useState(getCurrentUser());
@@ -288,9 +289,9 @@ useEffect(() => {
   const isGiamDoc = currentUser.role.name_role === 'giam_doc';
   const isDraft = order === null || order?.status === 'draft';
 
-  const canEditAll = isKinhDoanh && isDraft;
-  const canEditQuantityOnly = isCungUng || isGiamDoc;
-  const canSelectDeliveryDate = isCungUng && order?.status === 'pending';
+  const canEditAll = !readOnly&&isKinhDoanh && isDraft;
+  const canEditQuantityOnly =  !readOnly&&(isCungUng || isGiamDoc);
+  const canSelectDeliveryDate =  !readOnly&& isCungUng && order?.status === 'pending';
 
 
 
@@ -302,7 +303,7 @@ useEffect(() => {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
           <h2 className="text-2xl font-bold text-white">
-            {order ? 'Edit Order' : 'Create New Order'}
+            { readOnly ?'View Order' : order ? 'Edit Order' : 'Create New Order'}
           </h2>
           <button
             onClick={onClose}
@@ -380,11 +381,10 @@ useEffect(() => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-white">Order Items</h3>
-             {isKinhDoanh && isDraft  &&(
+             {isKinhDoanh && isDraft  && !readOnly &&(
               <button
                 type="button"
                 onClick={addItem}
-
                 className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 <Plus className="h-4 w-4" />
