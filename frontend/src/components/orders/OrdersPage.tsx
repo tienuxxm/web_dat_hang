@@ -111,6 +111,7 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ mode }) => {
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [editingOrder, setEditingOrder] = useState<OrderFromAPI | null>(null);
+  const [readOnlyMode, setReadOnlyMode] = useState(false);
 
   const statuses = ['all', 'draft', 'pending', 'approved', 'rejected', 'fulfilled', 'inactive'];
   const paymentStatuses = ['all', 'pending', 'paid', 'failed', 'refunded'];
@@ -215,7 +216,7 @@ const OrdersPage: React.FC<OrdersPageProps> = ({ mode }) => {
 
 
 
-const handleEditOrder = async (order: Order) => {
+const handleEditOrder = async (order: Order,readOnly =false) => {
   try {
     const res = await api.get(`/orders/${order.id}`);
     const apiOrder = res.data.order;
@@ -242,7 +243,7 @@ const handleEditOrder = async (order: Order) => {
         quantity: Number(it.quantity)
       }))
     };
-
+    setReadOnlyMode(readOnly);
     setEditingOrder(orderFromAPI);
     setShowModal(true);
     toast.success('Đơn hàng đã được tải thành công!');
@@ -809,9 +810,14 @@ useEffect(() => {
                         <Trash2 className="h-4 w-4" />
                       </button>
                       )}
-                      
+                        <button
+                            onClick={() => handleEditOrder(order, true)} // 👈 Xem chi tiết
+                            className="p-2 text-gray-400 hover:text-gray-300 hover:bg-gray-500/10 rounded-lg transition-colors"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
                     </div>
-                  </td>
+                  </td>    
                 </tr>
               ))}
             </tbody>
@@ -1007,6 +1013,7 @@ useEffect(() => {
           order={editingOrder}
           onSave={handleSaveOrder}
           onClose={() => setShowModal(false)}
+          readOnly={readOnlyMode}
           currentUser={currentUser} // Truyền currentUser vào modal
         />
       )}
