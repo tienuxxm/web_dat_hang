@@ -5,7 +5,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://bitexweb.netlify.app'], // ✅ Thay bằng domain Netlify
+    'allowed_origins' => ['http://localhost:5173'], // ✅ Thay bằng domain Netlify
 
     'allowed_headers' => ['*'],
 
