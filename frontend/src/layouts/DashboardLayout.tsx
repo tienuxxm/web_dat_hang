@@ -108,7 +108,7 @@ export default function DashboardLayout() {
 
                      <main   className={`flex-1 transition-all duration-300 overflow-y-auto max-h-[calc(100vh-64px)] ${collapsed ? 'ml-16' : 'ml-64'}`}>
 
-            <div className="p-6">
+            <div className="p-6 sm:p-4">
               {renderCurrentPage()}
             </div>
           </main>
