@@ -105,9 +105,7 @@ export default function DashboardLayout() {
             onPageChange={setCurrentPage}
             isMobile={isMobile}
           />
-
-                     <main   className={`flex-1 transition-all duration-300 overflow-y-auto  ${collapsed ? 'ml-16' : 'ml-64'}`}>
-
+        <main   className={`flex-1 transition-all duration-300 overflow-y-auto  ${collapsed ? 'ml-16' : 'ml-64'}`}>
             <div className="p-6 sm:p-4">
               {renderCurrentPage()}
             </div>
