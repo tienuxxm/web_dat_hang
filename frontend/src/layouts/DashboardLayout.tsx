@@ -106,15 +106,16 @@ export default function DashboardLayout() {
             isMobile={isMobile}
           />
 
-                     <main   className={`flex-1 transition-all duration-300 overflow-y-auto max-h-[calc(100vh-64px)] ${collapsed ? 'ml-16' : 'ml-64'}`}>
+                     <main   className={`flex-1 transition-all duration-300 overflow-y-auto  ${collapsed ? 'ml-16' : 'ml-64'}`}>
 
             <div className="p-6 sm:p-4">
               {renderCurrentPage()}
             </div>
           </main>
         </div>
-
-        <Footer />
+        <div className="relative z-30 ">
+          <Footer />
+        </div>
       </div>
     </div>
     </>
