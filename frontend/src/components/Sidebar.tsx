@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       label: 'Overview',
       icon: <Home className="h-5 w-5" />,
       page: 'dashboard',
-      roles: [],
+     
     },
     {
       id: 'dashboard',
