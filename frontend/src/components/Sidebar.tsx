@@ -59,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       label: 'Dashboard',
       icon: <BarChart3 className="h-5 w-5" />,
       page: 'dashboard',
-      roles: [],
+     
     },
     {
       id: 'orders',
