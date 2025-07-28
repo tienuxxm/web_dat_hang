@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TrendingUp, TrendingDown, DollarSign, ShoppingCart, Users, Package } from 'lucide-react';
+import { getCurrentUser } from '../../utils/auth';
 
 interface StatCard {
   title: string;
@@ -10,41 +11,73 @@ interface StatCard {
   color: string;
 }
 
-const StatsCards: React.FC = () => {
-  const stats: StatCard[] = [
-    {
-      title: 'Total Revenue',
-      value: '$124,563',
-      change: 12.5,
-      changeType: 'increase',
-      icon: <DollarSign className="h-6 w-6" />,
-      color: 'from-green-500/20 to-emerald-500/20 border-green-500/30'
-    },
-    {
-      title: 'New Orders',
-      value: '1,429',
-      change: 8.2,
-      changeType: 'increase',
-      icon: <ShoppingCart className="h-6 w-6" />,
-      color: 'from-blue-500/20 to-cyan-500/20 border-blue-500/30'
-    },
-    {
-      title: 'Total Customers',
-      value: '9,847',
-      change: 3.1,
-      changeType: 'decrease',
-      icon: <Users className="h-6 w-6" />,
-      color: 'from-purple-500/20 to-pink-500/20 border-purple-500/30'
-    },
-    {
-      title: 'Products Sold',
-      value: '2,847',
-      change: 15.3,
-      changeType: 'increase',
-      icon: <Package className="h-6 w-6" />,
-      color: 'from-orange-500/20 to-red-500/20 border-orange-500/30'
-    }
-  ];
+interface StatsCardsProps {
+  data: {
+    totalRevenue: number;
+    totalOrders: number;
+    totalCustomers: number;
+    productsSold: number;
+    pendingOrders: number;
+    processingOrders: number;
+  };
+}
+
+const StatsCards: React.FC<StatsCardsProps> = ({ data }) => {
+  const currentUser = getCurrentUser();
+  
+  const stats: StatCard[] = useMemo(() => {
+    const role = currentUser?.role?.name_role;
+    const dept = currentUser?.department?.name_department;
+    
+    // Calculate mock change percentages (in real app, you'd compare with previous period)
+    const revenueChange = Math.random() * 20 - 5; // -5% to +15%
+    const ordersChange = Math.random() * 25 - 10; // -10% to +15%
+    const productsChange = Math.random() * 30 - 5; // -5% to +25%
+    
+    // Determine labels based on user role
+    const pendingLabel = dept === 'KINH_DOANH' ? 'Draft Orders' :
+                        dept === 'CUNG_UNG' ? 'Pending Orders' :
+                        role === 'giam_doc' ? 'Approved Orders' : 'Pending Orders';
+    
+    const processingLabel = dept === 'KINH_DOANH' ? 'Sent Orders' :
+                           dept === 'CUNG_UNG' ? 'Approved Orders' :
+                           role === 'giam_doc' ? 'Fulfilled Orders' : 'Processing Orders';
+    
+    return [
+      {
+        title: 'Total Revenue',
+        value: `$${data.totalRevenue.toLocaleString()}`,
+        change: revenueChange,
+        changeType: revenueChange >= 0 ? 'increase' : 'decrease',
+        icon: <DollarSign className="h-6 w-6" />,
+        color: 'from-green-500/20 to-emerald-500/20 border-green-500/30'
+      },
+      {
+        title: pendingLabel,
+        value: data.pendingOrders.toString(),
+        change: ordersChange,
+        changeType: ordersChange >= 0 ? 'increase' : 'decrease',
+        icon: <ShoppingCart className="h-6 w-6" />,
+        color: 'from-yellow-500/20 to-orange-500/20 border-yellow-500/30'
+      },
+      {
+        title: processingLabel,
+        value: data.processingOrders.toString(),
+        change: Math.random() * 15 - 5,
+        changeType: Math.random() > 0.5 ? 'increase' : 'decrease',
+        icon: <Package className="h-6 w-6" />,
+        color: 'from-blue-500/20 to-cyan-500/20 border-blue-500/30'
+      },
+      {
+        title: 'Products Sold',
+        value: data.productsSold.toLocaleString(),
+        change: productsChange,
+        changeType: productsChange >= 0 ? 'increase' : 'decrease',
+        icon: <Package className="h-6 w-6" />,
+        color: 'from-purple-500/20 to-pink-500/20 border-purple-500/30'
+      }
+    ];
+  }, [data, currentUser]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -65,7 +98,7 @@ const StatsCards: React.FC = () => {
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
-              <span>{stat.change}%</span>
+              <span>{Math.abs(stat.change).toFixed(1)}%</span>
             </div>
           </div>
           

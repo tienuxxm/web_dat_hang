@@ -1,17 +1,35 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-const RevenueChart: React.FC = () => {
-  // Mock data for the chart
-  const chartData = [
-    { month: 'Jan', revenue: 45000 },
-    { month: 'Feb', revenue: 52000 },
-    { month: 'Mar', revenue: 48000 },
-    { month: 'Apr', revenue: 61000 },
-    { month: 'May', revenue: 55000 },
-    { month: 'Jun', revenue: 67000 },
-  ];
+interface RevenueChartProps {
+  data: Array<{
+    month: string;
+    revenue: number;
+  }>;
+}
 
-  const maxRevenue = Math.max(...chartData.map(d => d.revenue));
+const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
+  const maxRevenue = useMemo(() => {
+    return Math.max(...data.map(d => d.revenue), 1); // Ensure at least 1 to avoid division by zero
+  }, [data]);
+
+  const totalRevenue = useMemo(() => {
+    return data.reduce((sum, d) => sum + d.revenue, 0);
+  }, [data]);
+
+  const averageRevenue = useMemo(() => {
+    return data.length > 0 ? Math.round(totalRevenue / data.length) : 0;
+  }, [totalRevenue, data.length]);
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
+        <h3 className="text-xl font-semibold text-white mb-6">Revenue Overview</h3>
+        <div className="flex items-center justify-center h-64 text-gray-400">
+          <p>No revenue data available</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6">
@@ -25,17 +43,19 @@ const RevenueChart: React.FC = () => {
 
       {/* Simple Bar Chart */}
       <div className="space-y-4">
-        {chartData.map((data, index) => (
+        {data.map((item, index) => (
           <div key={index} className="flex items-center space-x-4">
-            <div className="w-8 text-gray-400 text-sm">{data.month}</div>
+            <div className="w-8 text-gray-400 text-sm">{item.month}</div>
             <div className="flex-1 bg-gray-800/50 rounded-full h-8 relative overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full transition-all duration-1000 ease-out flex items-center justify-end pr-3"
-                style={{ width: `${(data.revenue / maxRevenue) * 100}%` }}
+                style={{ width: `${maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0}%` }}
               >
-                <span className="text-white text-xs font-medium">
-                  ${(data.revenue / 1000).toFixed(0)}k
-                </span>
+                {item.revenue > 0 && (
+                  <span className="text-white text-xs font-medium">
+                    ${item.revenue >= 1000 ? `${(item.revenue / 1000).toFixed(0)}k` : item.revenue.toFixed(0)}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -46,15 +66,15 @@ const RevenueChart: React.FC = () => {
       <div className="mt-6 pt-6 border-t border-gray-700/50">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-gray-400 text-sm">Total Revenue (6 months)</p>
+            <p className="text-gray-400 text-sm">Total Revenue ({data.length} months)</p>
             <p className="text-white text-2xl font-bold">
-              ${chartData.reduce((sum, d) => sum + d.revenue, 0).toLocaleString()}
+              ${totalRevenue.toLocaleString()}
             </p>
           </div>
           <div className="text-right">
             <p className="text-gray-400 text-sm">Average Monthly</p>
             <p className="text-white text-xl font-semibold">
-              ${Math.round(chartData.reduce((sum, d) => sum + d.revenue, 0) / chartData.length).toLocaleString()}
+              ${averageRevenue.toLocaleString()}
             </p>
           </div>
         </div>
