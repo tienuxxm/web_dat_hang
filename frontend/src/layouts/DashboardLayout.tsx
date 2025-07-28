@@ -50,7 +50,7 @@ export default function DashboardLayout() {
       case 'productsCategories':
         return <CategoriesPage />;  
       default:
-        return <OrdersPage mode ="normal" />;
+        return <DashboardContent />;
     }
   };
 
