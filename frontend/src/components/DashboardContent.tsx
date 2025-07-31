@@ -31,7 +31,7 @@ const DashboardContent: React.FC = () => {
     processingOrders: 0,
   });
   const [loading, setLoading] = useState(true);
-  const currentUser = getCurrentUser();
+  const [currentUser, setCurrentUser] = useState(getCurrentUser());
 
   useEffect(() => {
     const fetchDashboardData = async () => {
