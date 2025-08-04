@@ -65,9 +65,7 @@ const fetchProducts = async (searchTerm?: string) => {
     if (searchTerm) {
       endpoint += `&q=${encodeURIComponent(searchTerm)}`;
     }
-    if (isManager) {
-      endpoint += `&withInactive=1`;
-    }
+  
 
     const res = await api.get(endpoint);
 
