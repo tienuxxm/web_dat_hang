@@ -208,4 +208,56 @@ class ExportController extends Controller
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ]);
     }
+    public function exportOrder(Request $request)
+    {
+        $user = JWTAuth::user();
+
+        if (!$user->isInDepartment('CUNG_UNG')) {
+            return response()->json(['message' => 'Bạn không có quyền xuất đơn hàng'], 403);
+        }
+
+        $orderIds = $request->input('order_ids', []);
+        if (empty($orderIds)) {
+            return response()->json(['message' => 'Chưa chọn đơn nào để xuất'], 422);
+        }
+
+        $orders = Order::with(['items.product'])->whereIn('id', $orderIds)->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $row = 1;
+
+        foreach ($orders as $order) {
+            // Header cột: barcode | color | quantity | address | supplier_name
+            $sheet->setCellValue("A{$row}", "barcode");
+            $sheet->setCellValue("B{$row}", "color");
+            $sheet->setCellValue("C{$row}", "quantity");
+            $sheet->setCellValue("D{$row}", "address");
+            $sheet->setCellValue("E{$row}", "supplier_name");
+            $row++;
+
+            foreach ($order->items as $item) {
+                $sheet->setCellValue("A{$row}", $item->product->barcode ?? '');
+                $sheet->setCellValue("B{$row}", $item->product->color ?? '');
+                $sheet->setCellValue("C{$row}", $item->quantity);
+                $sheet->setCellValue("D{$row}", $order->shipping_address);
+                $sheet->setCellValue("E{$row}", $order->supplier_name);
+                $row++;
+            }
+
+            // Dòng trắng ngăn giữa các đơn
+            $row++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'danh_sach_don_hang_' . now()->format('Ymd_His') . '.xlsx';
+
+        return new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+        ]);
+    }
 }
