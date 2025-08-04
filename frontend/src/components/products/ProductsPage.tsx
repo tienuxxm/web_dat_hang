@@ -189,9 +189,9 @@ const filteredProducts = useMemo(() => {
     }
   };
 
-  const getStockStatus = (stock: number) => {
+  const getStockStatus = (stock: number,min_stock :number) => {
     if (stock === 0) return { color: 'text-red-400', label: 'Out of Stock' };
-    if (stock < 20) return { color: 'text-yellow-400', label: 'Low Stock' };
+    if (stock < min_stock) return { color: 'text-yellow-400', label: 'Low Stock' };
     return { color: 'text-green-400', label: 'In Stock' };
   };
 
@@ -541,7 +541,7 @@ useEffect(() => {
             </thead>
             <tbody>
               {filteredProducts.map((product) => {
-                const stockStatus = getStockStatus(product.stock);
+                const stockStatus = getStockStatus(product.stock,product.min_stock);
                 return (
                   <tr
                     key={product.id}
